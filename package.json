@@ -7,9 +7,10 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "lint": "eslint --ext .js,.vue src util public assets --max-warnings=0",
-    "lint:fix": "eslint --ext .js,.vue src util public assets --fix",
-    "format": "prettier --write \"**/*.{js,vue,css,scss,json,md,html}\""
+    "lint": "eslint --ext .js,.ts,.vue src util public assets --max-warnings=0",
+    "lint:fix": "eslint --ext .js,.ts,.vue src util public assets --fix",
+    "format": "prettier --write \"**/*.{js,ts,vue,css,scss,json,md,html}\"",
+    "typecheck": "tsc --noEmit"
   },
   "keywords": [],
   "author": "",
@@ -20,12 +21,14 @@
     "vue-router": "^4.6.4"
   },
   "devDependencies": {
+    "@types/node": "^25.1.0",
     "@vitejs/plugin-vue": "^6.0.3",
     "eslint": "^8.50.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-vue": "^10.7.0",
     "prettier": "^2.8.8",
+    "typescript": "^5.9.3",
     "vite": "^7.3.1",
     "vite-plugin-static-copy": "^3.2.0",
     "vue-eslint-parser": "^10.2.0"

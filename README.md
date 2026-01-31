@@ -196,4 +196,4 @@ sket:その他
 php -S localhost:8000
 ```
 
-3. フロント側の API URL 設定を、必要に応じて `util/api.js` で更新
+3. フロント側の API URL 設定を、必要に応じて `util/api` (`util/api.ts`) で更新

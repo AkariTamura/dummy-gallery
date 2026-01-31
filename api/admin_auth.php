@@ -4,7 +4,7 @@ $secure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
 session_set_cookie_params([
     'lifetime' => 0,
     'path' => '/',
-    'domain' => $_SERVER['HTTP_HOST'] ?? '',
+    // omit 'domain' to keep a host-only cookie so the dev proxy (Vite) works correctly
     'secure' => $secure,
     'httponly' => true,
     'samesite' => 'Lax'
@@ -14,8 +14,9 @@ header('Content-Type: application/json');
 
 // 開発環境のみ任意のオリジンを許可する（Vite での開発時）
 $appEnv = getenv('APP_ENV') ?: getenv('APPLICATION_ENV');
-if (($appEnv === 'development' || $appEnv === 'local') && !empty($_SERVER['HTTP_ORIGIN'])) {
-    header('Access-Control-Allow-Origin: ' . $_SERVER['HTTP_ORIGIN']);
+if ($appEnv === 'development' || $appEnv === 'local') {
+    $origin = $_SERVER['HTTP_ORIGIN'] ?? 'http://localhost:5173';
+    header('Access-Control-Allow-Origin: ' . $origin);
     header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
     header('Access-Control-Allow-Headers: Content-Type');
     header('Access-Control-Allow-Credentials: true');

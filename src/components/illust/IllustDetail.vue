@@ -42,9 +42,9 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { useRoute } from 'vue-router';
-import { useIllustDetail } from '@/composable/useIllustDetail.js';
+import { useIllustDetail } from '@/composable/useIllustDetail';
 import BaseButton from '@/src/components/ui/BaseButton.vue';
 import BaseInput from '@/src/components/ui/BaseInput.vue';
 

@@ -4,10 +4,10 @@ const RAW_API_BASE =
   import.meta.env.VITE_API_BASE ?? (import.meta.env.DEV ? '' : import.meta.env.BASE_URL ?? '');
 
 // 正規化して末尾スラッシュを取り除く（'/dummy/' -> '/dummy'）
-const API_BASE = RAW_API_BASE ? String(RAW_API_BASE).replace(/\/$/, '') : '';
+const API_BASE: string = RAW_API_BASE ? String(RAW_API_BASE).replace(/\/$/, '') : '';
 
 // path が先頭に '/' を含むことを期待しているため、結合時は二重スラッシュを避ける
-const build = (path) => {
+const build = (path: string) => {
   if (!API_BASE) return path;
   return API_BASE + (path.startsWith('/') ? path : `/${path}`);
 };
@@ -17,15 +17,17 @@ export const ADMIN_BASE = build('/api/admin.php');
 export const ILLUST_BASE = build('/api/illust.php');
 export const INVESTIGATOR_BASE = build('/api/investigator.php');
 
+type FetchResult<T = any> = { ok: true } & T | { ok: false; error: string };
+
 // 通信エラーや JSON パースエラーを統一表現で返す
-async function safeFetchJson(url, options = {}) {
+async function safeFetchJson<T = any>(url: string, options: RequestInit = {}): Promise<FetchResult<T>> {
   try {
     const res = await fetch(url, { credentials: 'include', ...options });
     const text = await res.text();
     try {
       const json = text ? JSON.parse(text) : {};
-      if (!res.ok) return { ok: false, error: json && json.error ? json.error : 'request failed' };
-      return json;
+      if (!res.ok) return { ok: false, error: json?.error || 'request failed' };
+      return json as FetchResult<T>;
     } catch (e) {
       return { ok: false, error: 'invalid json' };
     }
@@ -38,7 +40,7 @@ async function safeFetchJson(url, options = {}) {
  * Admin Auth API
  * ========================= */
 
-export async function login(password) {
+export async function login(password: string) {
   return safeFetchJson(`${ADMIN_AUTH_BASE}?action=login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -68,14 +70,14 @@ export async function adminList() {
 /**
  * イラスト編集
  */
-export async function updateItem(fd) {
+export async function updateItem(fd: FormData) {
   return safeFetchJson(`${ADMIN_BASE}?action=update_item`, { method: 'POST', body: fd });
 }
 
 /**
  * イラスト削除
  */
-export async function deleteItem(id) {
+export async function deleteItem(id: string) {
   const fd = new FormData();
   fd.append('id', id);
   return safeFetchJson(`${ADMIN_BASE}?action=delete_item`, { method: 'POST', body: fd });
@@ -84,7 +86,7 @@ export async function deleteItem(id) {
 /**
  * イラストアップロード
  */
-export const uploadIllust = async (fd) => {
+export const uploadIllust = async (fd: FormData) => {
   return safeFetchJson(`${ADMIN_BASE}?action=upload_illust`, { method: 'POST', body: fd });
 };
 
@@ -98,7 +100,7 @@ export async function adminInvestigatorList() {
 /**
  * 探索者情報詳細取得
  */
-export async function adminInvestigatorDetail(id) {
+export async function adminInvestigatorDetail(id: string) {
   return safeFetchJson(
     `${ADMIN_BASE}?action=admin_investigator_detail&id=${encodeURIComponent(id)}`
   );
@@ -107,7 +109,7 @@ export async function adminInvestigatorDetail(id) {
 /**
  * 探索者情報削除
  */
-export async function deleteInvestigator(id) {
+export async function deleteInvestigator(id: string) {
   const fd = new FormData();
   fd.append('id', id);
   return safeFetchJson(`${ADMIN_BASE}?action=delete_investigator`, { method: 'POST', body: fd });
@@ -116,9 +118,9 @@ export async function deleteInvestigator(id) {
 /**
  * 探索者情報登録
  */
-export async function addInvestigator(data) {
+export async function addInvestigator(data: any | FormData) {
   const isFormData = typeof FormData !== 'undefined' && data instanceof FormData;
-  const options = {
+  const options: RequestInit = {
     method: 'POST',
     body: isFormData ? data : JSON.stringify(data),
     headers: isFormData ? undefined : { 'Content-Type': 'application/json' },
@@ -129,9 +131,9 @@ export async function addInvestigator(data) {
 /**
  * 探索者情報更新
  */
-export async function updateInvestigator(data) {
+export async function updateInvestigator(data: any | FormData) {
   const isFormData = typeof FormData !== 'undefined' && data instanceof FormData;
-  const options = {
+  const options: RequestInit = {
     method: 'POST',
     body: isFormData ? data : JSON.stringify(data),
     headers: isFormData ? undefined : { 'Content-Type': 'application/json' },
@@ -142,7 +144,7 @@ export async function updateInvestigator(data) {
 /**
  * 探索者登録日更新
  */
-export async function updateInvestigatorCreatedAt(id, createdAt) {
+export async function updateInvestigatorCreatedAt(id: string, createdAt?: string) {
   const fd = new FormData();
   fd.append('id', id);
   fd.append('created_at', createdAt ?? '');
@@ -166,7 +168,7 @@ export async function illustList() {
 /**
  * イラスト詳細取得
  */
-export async function illustDetail(id) {
+export async function illustDetail(id: string) {
   return safeFetchJson(`${ILLUST_BASE}?mode=detail&id=${encodeURIComponent(id)}`);
 }
 
@@ -178,7 +180,7 @@ export async function investigatorList() {
   return safeFetchJson(`${INVESTIGATOR_BASE}?mode=investigator_list`);
 }
 
-export async function investigatorDetail(id) {
+export async function investigatorDetail(id: string) {
   return safeFetchJson(
     `${INVESTIGATOR_BASE}?mode=investigator_detail&id=${encodeURIComponent(id)}`
   );

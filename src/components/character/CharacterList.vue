@@ -43,9 +43,9 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
-import { investigatorList } from '@/util/api.js';
+import { investigatorList } from '@/util/api';
 import BaseSelect from '@/src/components/ui/BaseSelect.vue';
 
 const list = ref([]);

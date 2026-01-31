@@ -24,7 +24,12 @@ $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $path = preg_replace('#^/dummy/#', '', $path); // /dummy/ を削除
 $path = trim($path, '/');                   // 前後のスラッシュ削除
 
-$basePrefix = (strpos($_SERVER['REQUEST_URI'], '/dummy/') !== false) ? '/dummy' : '';
+$basePrefix = '';
+$referer = $_SERVER['HTTP_REFERER'] ?? '';
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+if (strpos($_SERVER['REQUEST_URI'], '/dummy/') !== false || strpos($referer, '/dummy/') !== false || strpos($origin, '/dummy/') !== false) {
+    $basePrefix = '/dummy/';
+}
 
 $mode = $_GET['mode'] ?? $_GET['action'] ?? null;
 if ($mode && $path === 'api/illust.php') {
@@ -71,7 +76,7 @@ if ($path === 'api/illust.php/list') {
 
     foreach ($rows as &$r) {
         $r['tags'] = json_decode($r['tags'], true) ?? [];
-        $r['image'] = "{$basePrefix}/assets/img/illust/thumb/{$r['id']}.jpg";
+        $r['image'] = "{$basePrefix}assets/img/illust/thumb/{$r['id']}.jpg";
         $r['hide_flg'] = (bool)$r['hide_flg'];
     }
 
@@ -91,7 +96,7 @@ if (preg_match('#^api/illust\.php/detail/(\d+)$#', $path, $m)) {
     }
 
     $row['tags'] = json_decode($row['tags'], true) ?? [];
-    $row['image'] = "{$basePrefix}/assets/img/illust/{$row['id']}.{$row['ext']}";
+    $row['image'] = "{$basePrefix}assets/img/illust/{$row['id']}.{$row['ext']}";
     $row['hide_flg'] = (bool)$row['hide_flg'];
 
     jsonResponse($row);

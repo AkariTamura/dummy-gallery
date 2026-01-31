@@ -46,35 +46,32 @@ const routes = [
       {
         path: 'entry/:id?',
         component: AdminInvestigatorEntry,
-        props: (route) => ({ editId: route.params.id ?? null }),
+        props: (route: any) => ({ editId: route.params.id ?? null }),
       },
     ],
     meta: { requiresAdmin: true },
   },
 ];
 
-// use Vite-provided base (import.meta.env.BASE_URL) so dev/prod behave consistently
+const base = import.meta.env.DEV ? '/' : '/dummy/';
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL || '/'),
+  history: createWebHistory(base),
   routes,
 });
 
 router.beforeEach(async (to, from, next) => {
-  let res = { ok: false };
+  let res: any = { ok: false };
 
   try {
     res = await check();
   } catch (e) {
-    // API エラー時は未ログイン扱い
     console.warn('認証チェックに失敗しました');
   }
 
-  // 管理者専用ページに未ログインでアクセス
-  if (to.meta.requiresAdmin && !res.ok) {
+  if ((to as any).meta.requiresAdmin && !res.ok) {
     return next('/login');
   }
 
-  // ログイン済みでログインページにアクセス
   if (to.path === '/login' && res.ok) {
     return next('/admin');
   }

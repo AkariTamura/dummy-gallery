@@ -510,18 +510,18 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { computed, ref, watch, nextTick, onBeforeUnmount } from 'vue';
 import { useRouter } from 'vue-router';
 import Cropper from 'cropperjs';
 import 'cropperjs/dist/cropper.css';
-import { useAdminInvestigatorEntry } from '@/composable/useAdminInvestigatorEntry.js';
+import { useAdminInvestigatorEntry } from '@/composable/useAdminInvestigatorEntry';
 import investigatorInfo from '@/assets/json/investigatorInfo.json';
 import BaseButton from '@/src/components/ui/BaseButton.vue';
 import BaseInput from '@/src/components/ui/BaseInput.vue';
 import BaseTextarea from '@/src/components/ui/BaseTextarea.vue';
 import BaseSelect from '@/src/components/ui/BaseSelect.vue';
-import { getSkillTotal } from '@/composable/useInvestigatorUtils.js';
+import { getSkillTotal } from '@/composable/useInvestigatorUtils';
 
 const props = defineProps({
   editId: { type: [String, Number], default: null },

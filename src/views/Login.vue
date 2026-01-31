@@ -12,10 +12,10 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { login } from '@/util/api.js';
+import { login } from '@/util/api';
 import BaseButton from '@/src/components/ui/BaseButton.vue';
 import BaseInput from '@/src/components/ui/BaseInput.vue';
 

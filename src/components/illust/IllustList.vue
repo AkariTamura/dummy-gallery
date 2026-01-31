@@ -30,8 +30,8 @@
   </div>
 </template>
 
-<script setup>
-import { useIllustList } from '@/composable/useIllustList.js';
+<script setup lang="ts">
+import { useIllustList } from '@/composable/useIllustList';
 import BaseButton from '@/src/components/ui/BaseButton.vue';
 
 const { currentTag, filteredList, selectTag, clearTag } = useIllustList();

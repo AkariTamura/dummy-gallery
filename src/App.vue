@@ -11,7 +11,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, watch, onBeforeUnmount, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import Navigation from './views/Navigation.vue';

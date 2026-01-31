@@ -39,7 +39,7 @@
   </section>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import profileImage from '@/assets/img/profile/profImage.PNG';
 
 const baseUrl = import.meta.env.BASE_URL;

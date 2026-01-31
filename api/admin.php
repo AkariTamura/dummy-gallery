@@ -25,7 +25,12 @@ $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $path = preg_replace('#^/dummy/#', '', $path); // /dummy/ を削除
 $path = trim($path, '/');                   // 前後のスラッシュ削除
 
-$basePrefix = (strpos($_SERVER['REQUEST_URI'], '/dummy/') !== false) ? '/dummy' : '';
+$basePrefix = '';
+$referer = $_SERVER['HTTP_REFERER'] ?? '';
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+if (strpos($_SERVER['REQUEST_URI'], '/dummy/') !== false || strpos($referer, '/dummy/') !== false || strpos($origin, '/dummy/') !== false) {
+    $basePrefix = '/dummy/';
+}
 
 $action = $_GET['action'] ?? $_GET['mode'] ?? null;
 if ($action && $path === 'api/admin.php') {
@@ -206,7 +211,7 @@ if ($path === 'api/admin.php/admin_list') {
         // カンマ区切り文字列として返す
         $r['tagsStr'] = implode(',', $r['tags']);
 
-        $r['image'] = "{$basePrefix}/assets/img/illust/thumb/{$r['id']}.jpg";
+        $r['image'] = "{$basePrefix}assets/img/illust/thumb/{$r['id']}.jpg";
         $r['hide_flg'] = (bool)$r['hide_flg'];
         $r['hide_Q'] = $r['hide_Q'] ?? '';
         $r['hide_A'] = $r['hide_A'] ?? '';
@@ -364,7 +369,7 @@ if ($path === 'api/admin.php/upload_illust' && $_SERVER['REQUEST_METHOD'] === 'P
         exit;
     }
 
-    jsonResponse(['id' => $id]);
+    jsonResponse(['ok' => true, 'id' => $id]);
     exit;
 }
 
@@ -418,6 +423,13 @@ if ($path === 'api/admin.php/admin_investigator_list') {
 
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+    // Parse JSON fields so frontend receives native structures
+    foreach ($rows as &$r) {
+        $r['feature'] = parseJsonField($r['feature'] ?? '[]', []);
+        $r['status'] = parseJsonField($r['status'] ?? '{}', []);
+        $r['skill'] = parseJsonField($r['skill'] ?? '{}', []);
+    }
+
     jsonResponse($rows);
 }
 
@@ -449,7 +461,11 @@ if ($path === 'api/admin.php/admin_investigator_detail') {
             echo json_encode(['error' => 'not found']);
             exit;
         }
-        jsonResponse($row);
+        // Ensure JSON fields are parsed into native structures before returning
+        $row['feature'] = parseJsonField($row['feature'] ?? '[]', []);
+        $row['status'] = parseJsonField($row['status'] ?? '{}', []);
+        $row['skill'] = parseJsonField($row['skill'] ?? '{}', []);
+        jsonResponse(['ok' => true, 'data' => $row]);
     } catch (Throwable $e) {
         http_response_code(500);
         echo json_encode(['error' => $e->getMessage()]);

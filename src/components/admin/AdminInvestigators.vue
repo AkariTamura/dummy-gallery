@@ -336,11 +336,11 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
-import { useAdminInvestigators } from '@/composable/useAdminInvestigators.js';
-import { useAdminInvestigatorEntry } from '@/composable/useAdminInvestigatorEntry.js';
+import { useAdminInvestigators } from '@/composable/useAdminInvestigators';
+import { useAdminInvestigatorEntry } from '@/composable/useAdminInvestigatorEntry';
 import investigatorInfo from '@/assets/json/investigatorInfo.json';
 import BaseButton from '@/src/components/ui/BaseButton.vue';
 import BaseInput from '@/src/components/ui/BaseInput.vue';
@@ -353,7 +353,7 @@ import {
   parseFeature,
   parseJSON,
   getSkillTotal,
-} from '@/composable/useInvestigatorUtils.js';
+} from '@/composable/useInvestigatorUtils';
 
 const { list, refresh, remove, updateCreatedAt } = useAdminInvestigators();
 const selected = ref(null);

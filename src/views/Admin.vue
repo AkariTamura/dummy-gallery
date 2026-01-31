@@ -14,9 +14,9 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { useRouter } from 'vue-router';
-import { logout } from '@/util/api.js';
+import { logout } from '@/util/api';
 const router = useRouter();
 const doLogout = async () => {
   await logout();

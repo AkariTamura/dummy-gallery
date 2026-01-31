@@ -5,7 +5,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import topImage from '@/assets/img/top/topImage.PNG';
 </script>
 

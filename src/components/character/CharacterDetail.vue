@@ -44,10 +44,10 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
-import { investigatorDetail, INVESTIGATOR_BASE } from '@/util/api.js';
+import { investigatorDetail, INVESTIGATOR_BASE } from '@/util/api';
 
 const route = useRoute();
 const item = ref(null);
