@@ -190,18 +190,18 @@
                                     <!-- san は DB から来る場合はそれを使い、なければ ini_san の合計を計算 -->
                                     <div>
                                       {{
-                                        inv.status?.san?.default ??
-                                        (inv.status?.ini_san?.default || 0) +
-                                          (inv.status?.ini_san?.ex1 || 0) +
-                                          (inv.status?.ini_san?.ex2 || 0)
+                                        Number(inv.status?.san?.default) ||
+                                          ((Number(inv.status?.ini_san?.default) || 0) +
+                                            (Number(inv.status?.ini_san?.ex1) || 0) +
+                                            (Number(inv.status?.ini_san?.ex2) || 0))
                                       }}
                                     </div>
                                   </template>
                                   <template v-else>
                                     {{
-                                      (inv.status[item.key]?.default ?? 0) +
-                                      (inv.status[item.key]?.ex1 ?? 0) +
-                                      (inv.status[item.key]?.ex2 ?? 0)
+                                      (Number(inv.status[item.key]?.default) || 0) +
+                                      (Number(inv.status[item.key]?.ex1) || 0) +
+                                      (Number(inv.status[item.key]?.ex2) || 0)
                                     }}
                                     <br />
                                     <span
@@ -340,8 +340,8 @@
 import { ref, computed, watch } from 'vue';
 const DEV_LOG = import.meta.env.DEV;
 import { useRouter } from 'vue-router';
-import { useAdminInvestigators } from '@/composable/useAdminInvestigators';
-import { useAdminInvestigatorEntry } from '@/composable/useAdminInvestigatorEntry';
+import { useAdminInvestigators } from '@/composable/useAdminInvestigators.ts';
+import { useAdminInvestigatorEntry } from '@/composable/useAdminInvestigatorEntry.ts';
 import investigatorInfo from '@/assets/json/investigatorInfo.json';
 import BaseButton from '@/src/components/ui/BaseButton.vue';
 import BaseInput from '@/src/components/ui/BaseInput.vue';
@@ -353,7 +353,7 @@ import {
   isFemale,
   parseFeature,
   getSkillTotal,
-} from '@/composable/useInvestigatorUtils';
+} from '@/composable/useInvestigatorUtils.ts';
 
 const { list, refresh, remove, updateCreatedAt } = useAdminInvestigators();
 const router = useRouter();

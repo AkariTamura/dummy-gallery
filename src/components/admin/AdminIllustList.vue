@@ -83,7 +83,7 @@
 </template>
 
 <script setup lang="ts">
-import { useAdminIllustList } from '@/composable/useAdminIllustList';
+import { useAdminIllustList } from '@/composable/useAdminIllustList.ts';
 import BaseButton from '@/src/components/ui/BaseButton.vue';
 import BaseInput from '@/src/components/ui/BaseInput.vue';
 import BaseTextarea from '@/src/components/ui/BaseTextarea.vue';

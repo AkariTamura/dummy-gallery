@@ -46,7 +46,7 @@
 <script setup lang="ts">
 const DEV_LOG = import.meta.env.DEV;
 import { computed, onMounted, ref } from 'vue';
-import { investigatorList } from '@/util/api';
+import { investigatorList } from '@/util/api.ts';
 import BaseSelect from '@/src/components/ui/BaseSelect.vue';
 
 const list = ref([]);

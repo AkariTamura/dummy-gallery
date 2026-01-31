@@ -48,7 +48,7 @@
 const DEV_LOG = import.meta.env.DEV;
 import { computed, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
-import { investigatorDetail, INVESTIGATOR_BASE } from '@/util/api';
+import { investigatorDetail, INVESTIGATOR_BASE } from '@/util/api.ts';
 
 const route = useRoute();
 const item = ref(null);

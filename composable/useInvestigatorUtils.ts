@@ -16,15 +16,27 @@ export function isFemale(v: any): boolean {
   return v === 'female' || v === '女性';
 }
 
-export function parseFeature(s: string) {
-  try {
-    return JSON.parse(s);
-  } catch (e) {
-    return null;
+export function parseFeature(s: any): string {
+  if (s == null) return '';
+  // already an array
+  if (Array.isArray(s)) return s.join(', ');
+  // already an object -> stringify
+  if (typeof s === 'object') return JSON.stringify(s);
+  // string: try parse JSON, otherwise return as-is
+  if (typeof s === 'string') {
+    try {
+      const parsed = JSON.parse(s);
+      if (Array.isArray(parsed)) return parsed.join(', ');
+      if (typeof parsed === 'object') return JSON.stringify(parsed);
+      return String(parsed);
+    } catch (e) {
+      return s;
+    }
   }
+  return String(s);
 }
 
-export function parseJSON(s: string) {
+export function parseJSON(s: any) {
   return parseFeature(s);
 }
 

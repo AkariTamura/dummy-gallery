@@ -13,7 +13,7 @@ import AdminIllustList from '@/src/components/admin/AdminIllustList.vue';
 import AdminIllustUpload from '@/src/components/admin/AdminIllustUpload.vue';
 import AdminInvestigators from '@/src/components/admin/AdminInvestigators.vue';
 import AdminInvestigatorEntry from '@/src/components/admin/AdminInvestigatorEntry.vue';
-import { check } from '@/util/api';
+import { check } from '@/util/api.ts';
 
 const routes = [
   { path: '/', component: Top },
@@ -53,7 +53,7 @@ const routes = [
   },
 ];
 
-const base = import.meta.env.DEV ? '/' : '/dummy/';
+const base = import.meta.env.BASE_URL || '/';
 const router = createRouter({
   history: createWebHistory(base),
   routes,

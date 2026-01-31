@@ -1,5 +1,5 @@
 import { ref, Ref } from 'vue';
-import { uploadIllust } from '@/util/api';
+import { uploadIllust } from '@/util/api.ts';
 
 export function useAdminIllustUpload() {
   const file = ref<File | null>(null);

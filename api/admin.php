@@ -532,6 +532,10 @@ if (isset($_GET['action']) && $_GET['action'] === 'add_investigator') {
     } else {
         $input = file_get_contents('php://input');
         $data = json_decode($input, true);
+        // normalize JSON-body fields to match POST handling
+        $data['feature'] = parseJsonField($data['feature'] ?? '[]', []);
+        $data['status'] = parseJsonField($data['status'] ?? '{}', []);
+        $data['skill'] = parseJsonField($data['skill'] ?? '{}', []);
     }
 
     if (!$data) {
@@ -651,6 +655,10 @@ if (isset($_GET['action']) && $_GET['action'] === 'update_investigator') {
     } else {
         $input = file_get_contents('php://input');
         $data = json_decode($input, true);
+        // normalize JSON-body fields to match POST handling
+        $data['feature'] = parseJsonField($data['feature'] ?? '[]', []);
+        $data['status'] = parseJsonField($data['status'] ?? '{}', []);
+        $data['skill'] = parseJsonField($data['skill'] ?? '{}', []);
     }
 
     if (!$data) {

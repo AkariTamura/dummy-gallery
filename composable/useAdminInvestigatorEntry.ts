@@ -1,11 +1,10 @@
-// @ts-nocheck
 import { ref, onMounted, Ref, watch } from 'vue';
 import investigatorInfo from '@/assets/json/investigatorInfo.json';
 import {
   addInvestigator,
   adminInvestigatorDetail,
   updateInvestigator,
-} from '@/util/api';
+} from '@/util/api.ts';
 
 type StatusKey =
   | 'str'
@@ -626,10 +625,24 @@ export function useAdminInvestigatorEntry(editId: string | null = null) {
     try {
       errors.value = {};
       const payload = { ...formData.value };
+      // ensure feature is an array (split strings by newline, comma, or whitespace)
+      if (payload.feature == null) {
+        payload.feature = [];
+      } else if (!Array.isArray(payload.feature)) {
+        const raw = String(payload.feature || '').trim();
+        if (!raw) {
+          payload.feature = [];
+        } else {
+          payload.feature = raw
+            .split(/[\r\n,、\s]+/)
+            .map((s) => s.trim())
+            .filter((s) => s.length > 0);
+        }
+      }
       if (imageFile.value) {
         const fd = new FormData();
         for (const k of Object.keys(payload)) {
-          if (k === 'status' || k === 'skill') {
+          if (k === 'status' || k === 'skill' || k === 'feature') {
             fd.append(k, JSON.stringify(payload[k]));
           } else {
             fd.append(k, payload[k] ?? '');

@@ -1,5 +1,5 @@
 import { ref, onMounted, Ref } from 'vue';
-import { adminList, updateItem, deleteItem } from '@/util/api';
+import { adminList, updateItem, deleteItem } from '@/util/api.ts';
 
 export function useAdminIllustList() {
   const list: Ref<any[]> = ref([]);

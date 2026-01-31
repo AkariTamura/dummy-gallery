@@ -44,7 +44,7 @@
 
 <script setup lang="ts">
 import { useRoute } from 'vue-router';
-import { useIllustDetail } from '@/composable/useIllustDetail';
+import { useIllustDetail } from '@/composable/useIllustDetail.ts';
 import BaseButton from '@/src/components/ui/BaseButton.vue';
 import BaseInput from '@/src/components/ui/BaseInput.vue';
 
