@@ -338,6 +338,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
+const DEV_LOG = import.meta.env.DEV;
 import { useRouter } from 'vue-router';
 import { useAdminInvestigators } from '@/composable/useAdminInvestigators';
 import { useAdminInvestigatorEntry } from '@/composable/useAdminInvestigatorEntry';
@@ -351,12 +352,10 @@ import {
   isMale,
   isFemale,
   parseFeature,
-  parseJSON,
   getSkillTotal,
 } from '@/composable/useInvestigatorUtils';
 
 const { list, refresh, remove, updateCreatedAt } = useAdminInvestigators();
-const selected = ref(null);
 const router = useRouter();
 const brokenThumbs = ref({});
 const thumbVersion = ref(0);
@@ -370,7 +369,6 @@ const minFilter = ref(null);
 const sexFilter = ref('all');
 
 // JSONから取得
-const statusList = investigatorInfo.statusList;
 const skillList = investigatorInfo.skillList;
 
 // statusList に '現在SAN'(san) を ini_san の前に挿入した配列を作る
@@ -389,13 +387,7 @@ const statusSortOptions = computed(() =>
   statusDisplay.value.map((item) => ({ key: item.key, label: item.label }))
 );
 
-const categoryLabelMap = computed(() => {
-  const map = {};
-  for (const [label, key] of Object.entries(skillList)) {
-    map[key] = label;
-  }
-  return map;
-});
+// categoryLabelMap is available via investigatorInfo.skillList when needed
 
 const skillSortOptions = computed(() => {
   const result = [];
@@ -616,7 +608,7 @@ const buildSkillCommands = (inv) => {
     // 追加技能（配列）
     const category = inv?.skill?.[categoryKey];
     if (category && typeof category === 'object' && !Array.isArray(category)) {
-      for (const [key, value] of Object.entries(category)) {
+      for (const value of Object.values(category)) {
         if (!Array.isArray(value)) continue;
         value.forEach((ex) => {
           const label = String(ex?.name ?? '').trim();
@@ -715,7 +707,7 @@ const copyToken = async (inv) => {
     document.body.removeChild(el);
     alert('コピーしました');
   } catch (e) {
-    console.error('copy token error:', e);
+    if (DEV_LOG) console.error('copy token error:', e);
     alert('コピーに失敗しました');
   }
 };
@@ -730,7 +722,7 @@ const doDeleteInvestigator = async (id) => {
     }
     alert(result?.error || '削除に失敗しました');
   } catch (e) {
-    console.error('delete investigator error:', e);
+    if (DEV_LOG) console.error('delete investigator error:', e);
     alert('削除に失敗しました');
   }
 };
@@ -788,7 +780,7 @@ const doUpdateFromStorage = async (inv) => {
     }
     alert(errors.value?.api || '更新に失敗しました');
   } catch (e) {
-    console.error('update from storage error:', e);
+    if (DEV_LOG) console.error('update from storage error:', e);
     alert('更新に失敗しました');
   }
 };
@@ -805,7 +797,7 @@ const doUpdateCreatedAt = async (inv) => {
     }
     alert(result?.error || '登録日の更新に失敗しました');
   } catch (e) {
-    console.error('update created_at error:', e);
+    if (DEV_LOG) console.error('update created_at error:', e);
     alert('登録日の更新に失敗しました');
   }
 };

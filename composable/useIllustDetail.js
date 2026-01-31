@@ -1,1 +1,1 @@
-export { useIllustDetail } from './useIllustDetail.ts';
+// removed: wrapper no longer needed; TypeScript module is canonical

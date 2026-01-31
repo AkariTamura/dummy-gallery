@@ -780,7 +780,6 @@ const isSanOverMax = computed(
 
 // テーブルの行分割: 上段と下段のキー
 const row1Keys = ['str', 'con', 'pow', 'dex', 'app', 'siz', 'int', 'edu', 'hp', 'mp'];
-const row2Keys = ['ini_san', 'idea', 'luck', 'know'];
 
 // ヘッダーに1行で全キーを表示する配列（メインテーブル用）
 const headerKeys = [...row1Keys];

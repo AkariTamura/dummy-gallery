@@ -1,1 +1,1 @@
-export { useIllustList } from './useIllustList.ts';
+// removed: wrapper no longer needed; TypeScript module is canonical

@@ -38,7 +38,7 @@ $allowedHosts = [
 
 $parsed = parse_url($url);
 if (!isset($parsed['host']) || !in_array($parsed['host'], $allowedHosts, true)) {
-    file_put_contents($debugLog, "HOST_NOT_ALLOWED: " . ($parsed['host'] ?? '') . "\n", FILE_APPEND);
+    if ($DEBUG) file_put_contents($debugLog, "HOST_NOT_ALLOWED: " . ($parsed['host'] ?? '') . "\n", FILE_APPEND);
     http_response_code(403);
     echo json_encode(['ok' => false, 'error' => 'host not allowed']);
     exit;
@@ -163,9 +163,11 @@ if (function_exists('curl_init')) {
         $fallbackContext = stream_context_create($fallbackOpts);
         $response = @file_get_contents($url, false, $fallbackContext);
         if ($response === false) {
-            if ($DEBUG) file_put_contents($debugLog, "FILE_GET_CONTENTS_FALLBACK_FAILED\n", FILE_APPEND);
-            if (isset($http_response_header) && $DEBUG) {
-                file_put_contents($debugLog, "FGC_FALLBACK_HEADERS:\n" . implode("\n", $http_response_header) . "\n", FILE_APPEND);
+            if ($DEBUG) {
+                file_put_contents($debugLog, "FILE_GET_CONTENTS_FALLBACK_FAILED\n", FILE_APPEND);
+                if (isset($http_response_header)) {
+                    file_put_contents($debugLog, "FGC_FALLBACK_HEADERS:\n" . implode("\n", $http_response_header) . "\n", FILE_APPEND);
+                }
             }
             http_response_code(500);
             echo json_encode(['ok' => false, 'error' => 'fetch failed (file_get_contents)']);

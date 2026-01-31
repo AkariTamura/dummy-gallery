@@ -1,1 +1,1 @@
-export { useAdminIllustList } from './useAdminIllustList.ts';
+// removed: wrapper no longer needed; TypeScript module is canonical

@@ -1,1 +1,1 @@
-export { useAdminInvestigators } from './useAdminInvestigators.ts';
+// removed: wrapper no longer needed; TypeScript module is canonical

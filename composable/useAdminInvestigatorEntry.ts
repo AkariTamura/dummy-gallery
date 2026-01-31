@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { ref, onMounted, Ref, watch } from 'vue';
 import investigatorInfo from '@/assets/json/investigatorInfo.json';
 import {

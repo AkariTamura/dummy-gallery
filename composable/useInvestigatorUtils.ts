@@ -28,7 +28,7 @@ export function parseJSON(s: string) {
   return parseFeature(s);
 }
 
-export function getSkillTotal(skills: any) {
+export function getSkillTotal(skills: any): number {
   if (skills == null) return 0;
   // Array of skill entries
   if (Array.isArray(skills)) {

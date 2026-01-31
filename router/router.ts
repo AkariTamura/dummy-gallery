@@ -65,7 +65,8 @@ router.beforeEach(async (to, from, next) => {
   try {
     res = await check();
   } catch (e) {
-    console.warn('認証チェックに失敗しました');
+    const ROUTER_DEBUG = import.meta.env.DEV;
+    if (ROUTER_DEBUG) console.warn('認証チェックに失敗しました');
   }
 
   if ((to as any).meta.requiresAdmin && !res.ok) {

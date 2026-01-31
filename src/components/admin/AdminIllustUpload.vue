@@ -101,6 +101,8 @@ const onFileChange = (e) => {
 
 const submit = async () => {
   await composableSubmit();
+  // reset composable state and clear file input
+  reset();
   if (fileInput.value) fileInput.value.value = '';
 };
 </script>

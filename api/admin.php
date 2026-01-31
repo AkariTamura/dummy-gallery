@@ -1,6 +1,8 @@
 <?php
 session_start();
 header('Content-Type: application/json');
+// Toggle debug logging for admin endpoints
+$ADMIN_DEBUG = false;
 
 // -------------------------
 // CORS 設定（開発中のみ）
@@ -309,9 +311,11 @@ if ($path === 'api/admin.php/delete_item') {
 // デバッグ: アップロード内容を一時的にファイル出力
 if ($path === 'api/admin.php/upload_illust' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $debugLog = __DIR__ . '/../db/upload_debug.log';
-    file_put_contents($debugLog, "==== " . date('Y-m-d H:i:s') . " ====".PHP_EOL, FILE_APPEND);
-    file_put_contents($debugLog, '$_FILES: ' . var_export($_FILES, true) . PHP_EOL, FILE_APPEND);
-    file_put_contents($debugLog, '$_POST: ' . var_export($_POST, true) . PHP_EOL, FILE_APPEND);
+    if ($ADMIN_DEBUG) {
+        file_put_contents($debugLog, "==== " . date('Y-m-d H:i:s') . " ====".PHP_EOL, FILE_APPEND);
+        file_put_contents($debugLog, '$_FILES: ' . var_export($_FILES, true) . PHP_EOL, FILE_APPEND);
+        file_put_contents($debugLog, '$_POST: ' . var_export($_POST, true) . PHP_EOL, FILE_APPEND);
+    }
 
     if (empty($_SESSION['admin'])) {
         jsonResponse(['error' => 'forbidden'], 403);

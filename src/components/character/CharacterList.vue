@@ -44,6 +44,7 @@
 </template>
 
 <script setup lang="ts">
+const DEV_LOG = import.meta.env.DEV;
 import { computed, onMounted, ref } from 'vue';
 import { investigatorList } from '@/util/api';
 import BaseSelect from '@/src/components/ui/BaseSelect.vue';
@@ -149,7 +150,7 @@ onMounted(async () => {
     brokenThumbs.value = {};
     thumbVersion.value += 1;
   } catch (e) {
-    console.error('investigatorList error:', e);
+    if (DEV_LOG) console.error('investigatorList error:', e);
     list.value = [];
   }
 });

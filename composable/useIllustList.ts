@@ -1,6 +1,7 @@
 import { ref, computed, onMounted, watch, Ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { illustList } from '@/util/api';
+const DEV_LOG = import.meta.env.DEV;
 
 export function useIllustList() {
   const route = useRoute();
@@ -12,13 +13,13 @@ export function useIllustList() {
     try {
       const res = await illustList();
       if ((res as any).ok === false) {
-        console.error('illustList error', res);
+        if (DEV_LOG) console.error('illustList error', res);
         list.value = [];
         return;
       }
       list.value = (res as any).data ?? (res as any) ?? [];
     } catch (e) {
-      console.error('illustList error', e);
+      if (DEV_LOG) console.error('illustList error', e);
       list.value = [];
     }
   };

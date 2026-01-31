@@ -45,6 +45,7 @@
 </template>
 
 <script setup lang="ts">
+const DEV_LOG = import.meta.env.DEV;
 import { computed, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { investigatorDetail, INVESTIGATOR_BASE } from '@/util/api';
@@ -101,7 +102,7 @@ onMounted(async () => {
     item.value = data?.error ? null : { ...data, status: normalizeStatus(data?.status) };
     isImageMissing.value = false;
   } catch (e) {
-    console.error('investigatorDetail error:', e);
+    if (DEV_LOG) console.error('investigatorDetail error:', e);
     item.value = null;
     isImageMissing.value = false;
   }
