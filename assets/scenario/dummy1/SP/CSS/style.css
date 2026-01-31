@@ -1,0 +1,264 @@
+  @media screen and (max-width:960px) {
+  /* 基本設定 */
+  body{
+    color: #68666c;
+    background: #d2ddde;
+    font-size: 16px;
+    font-family: "游ゴシック体", YuGothic, "游ゴシック", "Yu Gothic", sans-serif;
+    width: 100%;
+  }
+  img{
+    width: 100%
+  }
+  hr {
+    border-top: 2px dotted;
+    border-right: none;
+    border-bottom: none;
+    border-left: none;
+  }
+  button{
+    outline: none;
+    color: #68666c;
+  }
+
+  /* ヘッダー */
+  .headerPage{
+    width: 100%;
+    position: fixed;
+    content: '';
+    z-index: 2;
+  }
+
+  #headerTitle{
+    font-weight: bold;
+    font-size: 26px;
+    color: #fe6d30;
+    font-family: "Arial Black", "Helvetica Black	";
+    user-select: none;
+    z-index: 2;
+    line-height: 36px;
+  }
+  .headerCountents{
+    position: fixed;
+    width: 100%;
+    padding: 16px;
+    margin: auto;
+    user-select: none;
+    z-index: 2;
+    display: flex;
+    justify-content: space-between;
+    top:0;
+    left:0;
+    background: #68666c;
+    cursor:default;
+    color: #d2ddde;
+  }
+  .now{
+    color: #fe6d30;
+  }
+
+  /* ハンバーガー本体 */
+
+  .hamburgerWrap{
+    width: auto;
+    height: auto;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+  }
+  .hamburger {
+    width: 30px;
+    height: 22px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    cursor: pointer;
+  }
+
+  .hamburger.open{
+    width: 36px;
+    height: 16px;
+  }
+
+  .hamburger span {
+    display: block;
+    height: 2px;
+    width: 100%;
+    background-color: #d2ddde;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+  }
+
+  /* メニュー初期非表示 */
+  .menu {
+    position: fixed;
+    top: 0;
+    right: -105%;
+    flex-direction: column;
+    background-color: #d2ddde;
+    color: #68666c;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    transition: right 0.3s ease;
+    display: flex;
+    justify-content: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    padding: 30px;
+  }
+
+  .menu a{
+    padding-top: 1.2rem;
+      padding-bottom: 1.2rem;
+  }
+
+  .menu a + a {
+    border-top: 1px solid #68666c;
+  }
+
+  .menu.open {
+    right: 0%;
+  }
+
+  /* ハンバーガー開閉時のアニメーション */
+  .hamburger.open span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+  }
+
+  .hamburger.open span:nth-child(2) {
+    opacity: 0;
+    transition: all 0.1s ease;
+  }
+
+  .hamburger.open span:nth-child(3) {
+    transform: rotate(-45deg) translate(5px, -5px);
+  }
+
+
+  /* メイン総合 */
+  .main{
+    position: relative;
+    margin:auto;
+    width:100%;
+    z-index: 0;
+    user-select: text;
+    cursor: text;
+    font-size: 16px;
+  }
+  /* アウトライン */
+  #outlineLogo{
+    position: relative;
+    width: 90%;
+    margin:auto;
+    padding: 8rem 0 4rem 0;
+    max-width: 800px;
+    z-index: 0;
+  }
+  #outlineContents{
+    position: relative;
+    width: 80%;
+    margin:auto;
+    z-index: 0;
+  }
+  #page-0 hr{
+    width: 80%;
+    text-align: center;
+    margin: 0 auto;
+  }
+  #outlineContents hr{
+    width: 100%;
+  }
+  #nameChange{
+    padding: 1.6rem 0;
+  }
+  #nameChange input{
+      border: solid 1px;
+      background: #fff;
+      margin-bottom: 8px;
+      margin-right: 4px;
+    padding:0 2px;
+      border-radius: 2px;
+  }
+  #nameChange button{
+    outline: none;
+      color: #68666c;
+      border: solid 1px;
+      border-radius: 2px;
+      margin-bottom: 8px;
+  }
+  .nameChangeForm span{
+    width:5.6rem;
+    text-align:center;
+  }
+  .nameChangeForm{
+    margin: 0.4rem auto;
+  }
+
+
+  /* 本文 */
+  .textContents{
+    width: 80%;
+    margin:auto;
+    padding-bottom: 32px;
+  }
+
+  .dice{
+    background: linear-gradient(transparent 60%, rgba(254,109,48,0.35) 60%);
+  }
+
+  .item{
+    background: linear-gradient(transparent 60%, rgba(104,102,108,0.25) 60%);
+  }
+
+  .kp{
+    color: rgba(104,102,108,0.4);
+  }
+
+  .boldItem{
+    font-weight: bold;
+  }
+
+  .topicItem{
+    font-size: 26px;
+    padding-bottom: 16px;
+  }
+
+
+  /* フッター */
+  .footerPage{
+    width:90%;
+    height: 15vh;
+    padding-bottom: 1.6rem;
+    margin:auto;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 5;
+  }
+  #spllImg{
+    width:120px;
+  }
+  #spllContents{
+    font-size: 0.7rem;
+    padding-left: 0.8rem;
+  }
+
+  /* その他 */
+  .hidden{
+    visibility:hidden;
+  }
+
+  @media screen and (max-width:374px) {
+    body{
+      width: 310px;
+    }
+
+  }
+  @media screen and (min-width:767px) {
+    .menu {
+      width: 30%;
+    }
+  }
+}

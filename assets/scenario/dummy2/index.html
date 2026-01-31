@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" href="assets/img/favicon.ico">
+        <title>.DUMMY</title>
+        <meta name="description" content="">
+        <link rel="stylesheet" href="assets/css/destyle.css">
+        <link rel="stylesheet" href="assets/css/style.css">
+    </head>
+    <body>
+        <div id="app">
+            <!-- PC版 -->
+            <div class="content" v-if='!sp.spFlg'>
+                <!-- 目次 -->
+                <navigation></navigation>
+                <!-- 本編 -->
+                <div id="main">
+                    <div id="top">
+                        <img src="assets/img/top.png">
+                    </div>
+                    <main-outline :json='outLine'></main-outline>
+                    <main-info :json='info'></main-info>
+                    <main-text :common='common' :flg='flg' :json-list="[ep00,ep01,ep02,ep03,ep04]"></main-text>
+                    <main-q-and-a :json='qAndA'></main-q-and-a>
+                    <main-other :json='other'></main-other>
+                </div>
+                <!-- おたすけ機能 -->
+                <helper :common='common' :flg='flg' @value-change='valueChange'></helper>
+            </div>
+            <!-- SP版 -->
+            <div class="content" v-if='sp.spFlg'>
+                <!-- ヘッダー -->
+                 <div class="header-sp">
+                    <div class="header-sp-contents">
+                        <!-- ハンバーガー -->
+                        <div class="hamburger-wrap">
+                            <div id="header-title">
+                                .DUMMY
+                            </div>
+                            <div
+                            class="hamburger"
+                            :class="{ open: sp.menuOpen }"
+                            @click="toggleMenu"
+                            >
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                        </div>
+                        <div class="hamburger-wrap2">
+                            <div class="hamburger-next-nav" @click="toggleNavi">目次</div>
+                            <div class="hamburger-next-tool" @click="toggleTool">便利ツール</div>
+                        </div>
+                    </div>
+                    <!-- 目次 -->
+                    <navigation-sp class="navi-sp" :class="{ open: sp.naviOpen }"></navigation-sp>
+                    <!-- おたすけ機能 -->
+                    <helper-sp :common='common' :flg='flg' @value-change='valueChange' class="tool-sp" :class="{ open: sp.toolOpen }"></helper-sp>
+                 </div>
+                <!-- 本編 -->
+                <div id="main">
+                    <div id="top">
+                    </div>
+                    <main-outline-sp :json='outLine'></main-outline-sp>
+                    <main-info-sp :json='info'></main-info-sp>
+                    <main-text-sp :common='common' :flg='flg' :json-list="[ep00,ep01,ep02,ep03,ep04]"></main-text-sp>
+                    <main-q-and-a-sp :json='qAndA'></main-q-and-a-sp>
+                    <main-other-sp :json='other'></main-other-sp>
+                    <p class="un-select" style="font-size: 12px; margin: -24px 0 40px 0;">
+                        Call of Cthulhu is copyright ©1981, 2015, 2019 by Chaosium Inc. ;all rights reserved.
+                        Arranged by Arclight Inc.
+                        Call of Cthulhu is a registered trademark of Chaosium Inc.<br>
+                        PUBLISHED BY KADOKAWA CORPORATION
+                    </p>
+                </div>
+            </div>
+        </div>
+        <!-- コンポーネント読み込み -->
+        <script src="src/vue.min.js"></script>
+        <script src="src/pc/components/navigation.js"></script>
+        <script src="src/pc/components/mainOutLine.js"></script>
+        <script src="src/pc/components/mainInfo.js"></script>
+        <script src="src/pc/components/mainText.js"></script>
+        <script src="src/pc/components/mainQandA.js"></script>
+        <script src="src/pc/components/mainOther.js"></script>
+        <script src="src/pc/components/helper.js"></script>
+        <script src="src/sp/components/navigationSp.js"></script>
+        <script src="src/sp/components/helperSp.js"></script>
+        <script src="src/sp/components/mainOutLineSp.js"></script>
+        <script src="src/sp/components/mainInfoSp.js"></script>
+        <script src="src/sp/components/mainTextSp.js"></script>
+        <script src="src/sp/components/mainQandASp.js"></script>
+        <script src="src/sp/components/mainOtherSp.js"></script>
+        <!-- JSON読み込み -->
+        <script src="src/data/outLine.json.js"></script>
+        <script src="src/data/info.json.js"></script>
+        <script src="src/data/naviMenu.json.js"></script>
+        <script src="src/data/mainText/ep00.json.js"></script>
+        <script src="src/data/mainText/ep01.json.js"></script>
+        <script src="src/data/mainText/ep02.json.js"></script>
+        <script src="src/data/mainText/ep03.json.js"></script>
+        <script src="src/data/mainText/ep04.json.js"></script>
+        <script src="src/data/qAndA.json.js"></script>
+        <script src="src/data/other.json.js"></script>
+        <script src="src/script.js"></script>
+    </body>
+</html>
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+      // フェードイン
+      document.body.classList.add('loaded');
+    
+      // 既存のスムーススクロール処理もそのまま
+      const anchorLinks = document.querySelectorAll('a[href^="#"]');
+      anchorLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+          const hash = link.hash;
+          if (!hash) return;
+          const target = document.querySelector(hash);
+          if (!target) return;
+    
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          app.sp.menuOpen = false;
+          app.sp.naviOpen = false;
+          app.sp.toolOpen = false;
+        });
+      });
+    });
+</script>    

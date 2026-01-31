@@ -1,0 +1,15 @@
+option batch continue
+open ftp://sakoker:mf6638sakura@sakoker.sakura.ne.jp
+lcd C:\Users\milky\OneDrive\デスクトップ\開発系\sakoker\dummy
+cd /home/sakoker/www/dummy
+
+# 既存ディレクトリがあるため作成しない
+# 同期は削除フラグを外し、`db` と `assets/img` は上書き/削除しない
+synchronize remote -filemask="|db/;assets/img/" dist .
+# `api` は更新を反映するがリモート専用ファイルを削除しない
+synchronize remote api api
+# 注意: ルートの /api に同期すると DB パスがずれるため同期しない
+# `db` と `assets/img` の中身はリモートで管理されるため同期しない（上書きを避ける）
+# 必要なら個別にアップロードする
+put .htaccess
+exit

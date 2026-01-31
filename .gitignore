@@ -1,0 +1,28 @@
+# Node
+node_modules/
+npm-debug.log*
+
+# Build
+dist/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Databases / uploads (do not commit)
+db/
+_DB操作用/
+public/uploads/
+
+# Vite
+.vite/
+
+# Logs
+*.log
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

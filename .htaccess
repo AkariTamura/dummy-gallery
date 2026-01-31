@@ -1,0 +1,14 @@
+Options -MultiViews
+RewriteEngine On
+RewriteBase /dummy/
+
+# API は素通し
+RewriteRule ^api/.*$ - [L]
+
+# 実在ファイル・ディレクトリはそのまま
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# それ以外は SPA / index.html
+RewriteRule ^ index.html [L]
