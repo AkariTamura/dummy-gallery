@@ -5,7 +5,7 @@ module.exports = {
     node: true,
     es2021: true,
   },
-  parser: 'vue-eslint-parser',
+  parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 2022,
     sourceType: 'module',

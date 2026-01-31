@@ -1,5 +1,5 @@
 import { ref, onMounted, Ref } from 'vue';
-import { illustDetail } from '@/util/api.ts';
+import { illustDetail } from '@/util/api';
 
 export function useIllustDetail(id: string | null) {
   const illust: Ref<any | null> = ref(null);

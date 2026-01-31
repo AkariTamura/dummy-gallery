@@ -1,6 +1,6 @@
 import { ref, computed, onMounted, watch, Ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { illustList } from '@/util/api.ts';
+import { illustList } from '@/util/api';
 const DEV_LOG = import.meta.env.DEV;
 
 export function useIllustList() {

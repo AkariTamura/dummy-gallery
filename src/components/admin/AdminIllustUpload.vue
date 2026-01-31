@@ -74,7 +74,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useAdminIllustUpload } from '@/composable/useAdminIllustUpload.ts';
+import { useAdminIllustUpload } from '@/composable/useAdminIllustUpload';
 import BaseButton from '@/src/components/ui/BaseButton.vue';
 import BaseInput from '@/src/components/ui/BaseInput.vue';
 import BaseTextarea from '@/src/components/ui/BaseTextarea.vue';

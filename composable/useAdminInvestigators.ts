@@ -1,5 +1,5 @@
 import { ref, onMounted, Ref } from 'vue';
-import { adminInvestigatorList, deleteInvestigator, updateInvestigatorCreatedAt } from '@/util/api.ts';
+import { adminInvestigatorList, deleteInvestigator, updateInvestigatorCreatedAt } from '@/util/api';
 
 export function useAdminInvestigators() {
   const list: Ref<any[]> = ref([]);

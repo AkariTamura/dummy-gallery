@@ -17,10 +17,13 @@ export const ADMIN_BASE = build('/api/admin.php');
 export const ILLUST_BASE = build('/api/illust.php');
 export const INVESTIGATOR_BASE = build('/api/investigator.php');
 
-type FetchResult<T = any> = { ok: true } & T | { ok: false; error: string };
+type FetchResult<T = any> = ({ ok: true } & T) | { ok: false; error: string };
 
 // 通信エラーや JSON パースエラーを統一表現で返す
-async function safeFetchJson<T = any>(url: string, options: RequestInit = {}): Promise<FetchResult<T>> {
+async function safeFetchJson<T = any>(
+  url: string,
+  options: RequestInit = {}
+): Promise<FetchResult<T>> {
   try {
     const res = await fetch(url, { credentials: 'include', ...options });
     const text = await res.text();

@@ -1,9 +1,17 @@
 import { ref, Ref } from 'vue';
-import { uploadIllust } from '@/util/api.ts';
+import { uploadIllust } from '@/util/api';
+
+type Errors = {
+  file?: string;
+  title?: string;
+  caption?: string;
+  created_ymd?: string;
+  api?: string;
+};
 
 export function useAdminIllustUpload() {
   const file = ref<File | null>(null);
-  const uploading: Ref<boolean> = ref(false);
+  const uploading = ref<boolean>(false);
 
   // form fields
   const title = ref('');
@@ -22,7 +30,7 @@ export function useAdminIllustUpload() {
   const hide_Q = ref('');
   const hide_A = ref('');
 
-  const errors: Ref<Record<string, string | null>> = ref({});
+  const errors = ref<Errors>({});
 
   const reset = () => {
     file.value = null;
@@ -37,7 +45,7 @@ export function useAdminIllustUpload() {
   };
 
   const validate = () => {
-    const err: Record<string, string> = {};
+    const err: Errors = {};
     if (!file.value) err.file = 'ファイルは必須です';
     if (!title.value.trim()) err.title = 'タイトルは必須です';
     if (!caption.value.trim()) err.caption = 'キャプションは必須です';

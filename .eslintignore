@@ -6,5 +6,4 @@ _DB操作用/
 public/uploads/
 .history/
 src/shims-vue.d.ts
-util/api.ts
 assets/scenario/**

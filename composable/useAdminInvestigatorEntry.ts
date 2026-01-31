@@ -4,7 +4,7 @@ import {
   addInvestigator,
   adminInvestigatorDetail,
   updateInvestigator,
-} from '@/util/api.ts';
+} from '@/util/api';
 
 type StatusKey =
   | 'str'
@@ -398,14 +398,15 @@ export function useAdminInvestigatorEntry(editId: string | null = null) {
             } else {
               catObj[k] = [];
             }
-          } else if (typeof v === 'object') {
+          } else if (v && typeof v === 'object') {
+            // 型ガード: vがnullでなくobject
             catObj[k] = {
-              label: v.label ?? v.name ?? '',
-              default: Number(v.default ?? v.value ?? 0) || 0,
-              ex1: Number(v.ex1 ?? 0) || 0,
-              ex2: Number(v.ex2 ?? 0) || 0,
-              ex3: Number(v.ex3 ?? 0) || 0,
-              ex4: Number(v.ex4 ?? 0) || 0,
+              label: (typeof (v as any).label === 'string' ? (v as any).label : (typeof (v as any).name === 'string' ? (v as any).name : '')),
+              default: Number((v as any).default ?? (v as any).value ?? 0) || 0,
+              ex1: Number((v as any).ex1 ?? 0) || 0,
+              ex2: Number((v as any).ex2 ?? 0) || 0,
+              ex3: Number((v as any).ex3 ?? 0) || 0,
+              ex4: Number((v as any).ex4 ?? 0) || 0,
             };
           } else {
             const n = Number(v) || 0;
@@ -565,11 +566,14 @@ export function useAdminInvestigatorEntry(editId: string | null = null) {
             if (val == null) {
               // skip
             } else if (typeof val === 'object') {
-              if ('default' in val || 'value' in val) target.default = val.default ?? val.value ?? target.default;
-              if ('ex1' in val) target.ex1 = val.ex1;
-              if ('ex2' in val) target.ex2 = val.ex2;
-              if ('ex3' in val) target.ex3 = val.ex3;
-              if ('ex4' in val) target.ex4 = val.ex4;
+              // 型ガード: default/value/ex1..ex4が存在する場合のみアクセス
+              if ('default' in val || 'value' in val) {
+                target.default = (val as any).default ?? (val as any).value ?? target.default;
+              }
+              if ('ex1' in val) target.ex1 = (val as any).ex1;
+              if ('ex2' in val) target.ex2 = (val as any).ex2;
+              if ('ex3' in val) target.ex3 = (val as any).ex3;
+              if ('ex4' in val) target.ex4 = (val as any).ex4;
             } else {
               const n = Number(val);
               if (!Number.isNaN(n)) target.default = n;

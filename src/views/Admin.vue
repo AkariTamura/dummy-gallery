@@ -16,7 +16,7 @@
 
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
-import { logout } from '@/util/api.ts';
+import { logout } from '@/util/api';
 const router = useRouter();
 const doLogout = async () => {
   await logout();

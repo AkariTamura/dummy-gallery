@@ -13,7 +13,7 @@ import AdminIllustList from '@/src/components/admin/AdminIllustList.vue';
 import AdminIllustUpload from '@/src/components/admin/AdminIllustUpload.vue';
 import AdminInvestigators from '@/src/components/admin/AdminInvestigators.vue';
 import AdminInvestigatorEntry from '@/src/components/admin/AdminInvestigatorEntry.vue';
-import { check } from '@/util/api.ts';
+import { check } from '@/util/api';
 
 const routes = [
   { path: '/', component: Top },
@@ -46,7 +46,7 @@ const routes = [
       {
         path: 'entry/:id?',
         component: AdminInvestigatorEntry,
-        props: (route: any) => ({ editId: route.params.id ?? null }),
+        props: (route) => ({ editId: route.params.id ?? null }),
       },
     ],
     meta: { requiresAdmin: true },

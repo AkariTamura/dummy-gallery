@@ -340,8 +340,8 @@
 import { ref, computed, watch } from 'vue';
 const DEV_LOG = import.meta.env.DEV;
 import { useRouter } from 'vue-router';
-import { useAdminInvestigators } from '@/composable/useAdminInvestigators.ts';
-import { useAdminInvestigatorEntry } from '@/composable/useAdminInvestigatorEntry.ts';
+import { useAdminInvestigators } from '@/composable/useAdminInvestigators';
+import { useAdminInvestigatorEntry } from '@/composable/useAdminInvestigatorEntry';
 import investigatorInfo from '@/assets/json/investigatorInfo.json';
 import BaseButton from '@/src/components/ui/BaseButton.vue';
 import BaseInput from '@/src/components/ui/BaseInput.vue';
@@ -353,7 +353,7 @@ import {
   isFemale,
   parseFeature,
   getSkillTotal,
-} from '@/composable/useInvestigatorUtils.ts';
+} from '@/composable/useInvestigatorUtils';
 
 const { list, refresh, remove, updateCreatedAt } = useAdminInvestigators();
 const router = useRouter();
@@ -402,9 +402,9 @@ const skillSortOptions = computed(() => {
 });
 
 const defaultSkillKeysMap = computed(() => {
-  const map = {};
+  const map: Record<string, any> = {};
   const base = investigatorInfo.skillDefaultList || {};
-  for (const [categoryKey, items] of Object.entries(base)) {
+  for (const [categoryKey, items] of Object.entries(base as Record<string, any>)) {
     map[categoryKey] = Object.keys(items || {}).filter(
       (k) => Array.isArray(items[k]) && items[k].length >= 2
     );
@@ -413,9 +413,9 @@ const defaultSkillKeysMap = computed(() => {
 });
 
 const skillLabelMap = computed(() => {
-  const map = {};
+  const map: Record<string, Record<string, string>> = {};
   const base = investigatorInfo.skillDefaultList || {};
-  for (const [categoryKey, items] of Object.entries(base)) {
+  for (const [categoryKey, items] of Object.entries(base as Record<string, any>)) {
     map[categoryKey] = {};
     for (const [skillKey, val] of Object.entries(items || {})) {
       if (!Array.isArray(val) || val.length < 2) continue;

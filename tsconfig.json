@@ -14,7 +14,8 @@
     "paths": {
       "@/*": ["./*"]
     },
-    "types": ["node"]
+    "types": ["node", "vue"],
+    "allowImportingTsExtensions": false
   },
   "include": ["src", "util", "router", "composable", "env.d.ts"],
   "exclude": ["node_modules", "dist"]
