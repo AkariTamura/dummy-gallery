@@ -1,5 +1,5 @@
 <?php
-// セッション cookie を厳格化（本番では HTTPS を有効にしてください）
+// セッション cookie を厳格化
 $secure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
 session_set_cookie_params([
     'lifetime' => 0,
@@ -29,13 +29,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 // ===== 設定 =====
 // パスワードハッシュは環境変数から読み込む
-// 本番では必ず ADMIN_PASSWORD_HASH を設定してください
 $PASSWORD_HASH = getenv('ADMIN_PASSWORD_HASH');
+
+// 読み込めなければ同ディレクトリの設定ファイルを参照する
+if (!$PASSWORD_HASH) {
+    $cfg = __DIR__ . '/config.php';
+    if (file_exists($cfg)) {
+        // 安全のため include 直後に変数を確認する
+        include $cfg; // should set $ADMIN_PASSWORD_HASH
+        if (!empty($ADMIN_PASSWORD_HASH)) {
+            $PASSWORD_HASH = $ADMIN_PASSWORD_HASH;
+        }
+    }
+}
 if (!$PASSWORD_HASH) {
     // 開発用フォールバック: 環境変数 APP_ENV が development または local の場合のみ許可
     $appEnv = getenv('APP_ENV') ?: getenv('APPLICATION_ENV');
     if ($appEnv === 'development' || $appEnv === 'local') {
-        // 開発用ダミーハッシュ（必要なら変更してください）
+        // 開発用ダミーハッシュ
         $PASSWORD_HASH = '$2y$10$NyoXz0Ro4FDSpC2kBcaF5ubR.BbMzfWGaqdyGUSDRGaMJOt8jFZqe';
     } else {
         // 本番で未設定の場合は安全のためエラーにする

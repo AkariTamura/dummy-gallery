@@ -1,16 +1,23 @@
-// API ベース URL は Vite の環境変数 `VITE_API_BASE` で上書き可能
-// 例: VITE_API_BASE=http://localhost:8000
-const API_BASE =
-  import.meta.env.VITE_API_BASE ?? (import.meta.env.DEV ? 'http://localhost:8000' : '');
+// 開発時はデフォルトで http://localhost:8000 を使い、本番では
+// `import.meta.env.BASE_URL` (例: '/dummy/') をフォールバックとして使う。
+const RAW_API_BASE =
+  import.meta.env.VITE_API_BASE ?? (import.meta.env.DEV ? 'http://localhost:8000' : import.meta.env.BASE_URL ?? '');
 
-const build = (path) => `${API_BASE}${path}`;
+// 正規化して末尾スラッシュを取り除く（'/dummy/' -> '/dummy'）
+const API_BASE = RAW_API_BASE ? String(RAW_API_BASE).replace(/\/$/, '') : '';
+
+// path が先頭に '/' を含むことを期待しているため、結合時は二重スラッシュを避ける
+const build = (path) => {
+  if (!API_BASE) return path;
+  return API_BASE + (path.startsWith('/') ? path : `/${path}`);
+};
 
 export const ADMIN_AUTH_BASE = build('/api/admin_auth.php');
 export const ADMIN_BASE = build('/api/admin.php');
 export const ILLUST_BASE = build('/api/illust.php');
 export const INVESTIGATOR_BASE = build('/api/investigator.php');
 
-// 共通の安全な JSON フェッチユーティリティ（通信エラーや JSON パースエラーを統一表現で返す）
+// 通信エラーや JSON パースエラーを統一表現で返す
 async function safeFetchJson(url, options = {}) {
   try {
     const res = await fetch(url, { credentials: 'include', ...options });
