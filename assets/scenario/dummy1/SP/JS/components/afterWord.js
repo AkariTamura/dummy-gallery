@@ -1,6 +1,5 @@
 let afterWordSp = {
-  template:
-  `<div class="main" id="page-6">
+  template: `<div class="main" id="page-6">
     <div class="textContents">
 <a class="boldItem topicItem">【シナリオについて】</a><br>
 
@@ -19,15 +18,14 @@ let afterWordSp = {
     </div>
     </div>`,
   props: {
-    'kpc': {
+    kpc: {
       type: String,
-      default: ''
+      default: '',
     },
-    'pc': {
+    pc: {
       type: String,
-      default: ''
+      default: '',
     },
   },
-  methods: {
-  }
-}
+  methods: {},
+};

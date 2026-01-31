@@ -1,6 +1,5 @@
 let search = {
-  template:
-  `<div class="main">
+  template: `<div class="main">
     <div class="textContents">
 		<br><a class="boldItem">■テキスト</a><br>
 <p>
@@ -30,18 +29,18 @@ let search = {
   </div>
   </div>`,
   props: {
-    'kpc': {
+    kpc: {
       type: String,
-      default: ''
+      default: '',
     },
-    'pc': {
+    pc: {
       type: String,
-      default: ''
+      default: '',
     },
   },
   methods: {
-	copyParagraph(e) {
-      this.$emit("copy-paragraph" , e);
+    copyParagraph(e) {
+      this.$emit('copy-paragraph', e);
     },
-  }
-}
+  },
+};

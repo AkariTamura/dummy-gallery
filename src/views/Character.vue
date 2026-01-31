@@ -5,14 +5,22 @@
   </div>
 </template>
 
-<script setup>
-</script>
+<script setup></script>
 
 <style scoped>
-.container { padding:16px 10%; text-align:left; }
-.title { margin-bottom:12px; font-size:24px; font-weight:600; }
+.container {
+  padding: 16px 10%;
+  text-align: left;
+}
+.title {
+  margin-bottom: 12px;
+  font-size: 24px;
+  font-weight: 600;
+}
 
 @media (max-width: 768px) {
-  .container { padding:16px 4%; }
+  .container {
+    padding: 16px 4%;
+  }
 }
 </style>

@@ -83,34 +83,99 @@
 </template>
 
 <script setup>
-import { useAdminIllustList } from '@/composable/useAdminIllustList.js'
-import BaseButton from '@/src/components/ui/BaseButton.vue'
-import BaseInput from '@/src/components/ui/BaseInput.vue'
-import BaseTextarea from '@/src/components/ui/BaseTextarea.vue'
+import { useAdminIllustList } from '@/composable/useAdminIllustList.js';
+import BaseButton from '@/src/components/ui/BaseButton.vue';
+import BaseInput from '@/src/components/ui/BaseInput.vue';
+import BaseTextarea from '@/src/components/ui/BaseTextarea.vue';
 
-const { list, editId, errors, startEdit, cancelEdit, update, remove } = useAdminIllustList()
+const { list, editId, errors, startEdit, cancelEdit, update, remove } = useAdminIllustList();
 </script>
 
 <style scoped>
-.container { padding:16px 10%; text-align:left; }
-.title { margin-bottom:12px; font-size:24px; font-weight:600; }
-.main-table { width:100%; border-collapse:collapse; border:1px solid #ddd; table-layout:fixed; }
-.main-table th, .main-table td { border:1px solid #e0e0e0; padding:8px; vertical-align:top; }
-.thumb { width:80px; height:80px; object-fit:cover; border-radius:4px; border:1px solid #eee; }
-.cell-id { text-align:center; font-weight:600; }
-.input-full { width:100%; padding:6px; box-sizing:border-box; }
-.input-small { width:120px; padding:6px; box-sizing:border-box; }
-.textarea-large { width:100%; padding:6px; box-sizing:border-box; }
-.textarea-small { width:100%; padding:6px; box-sizing:border-box; }
-.text-wrap { word-break:break-word; }
-.text-center { text-align:center; }
-.action-stack { display:flex; flex-direction:column; gap:6px; }
-.error-text { color:#d00; font-size:0.85em; margin-top:4px; }
+.container {
+  padding: 16px 10%;
+  text-align: left;
+}
+.title {
+  margin-bottom: 12px;
+  font-size: 24px;
+  font-weight: 600;
+}
+.main-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #ddd;
+  table-layout: fixed;
+}
+.main-table th,
+.main-table td {
+  border: 1px solid #e0e0e0;
+  padding: 8px;
+  vertical-align: top;
+}
+.thumb {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 1px solid #eee;
+}
+.cell-id {
+  text-align: center;
+  font-weight: 600;
+}
+.input-full {
+  width: 100%;
+  padding: 6px;
+  box-sizing: border-box;
+}
+.input-small {
+  width: 120px;
+  padding: 6px;
+  box-sizing: border-box;
+}
+.textarea-large {
+  width: 100%;
+  padding: 6px;
+  box-sizing: border-box;
+}
+.textarea-small {
+  width: 100%;
+  padding: 6px;
+  box-sizing: border-box;
+}
+.text-wrap {
+  word-break: break-word;
+}
+.text-center {
+  text-align: center;
+}
+.action-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.error-text {
+  color: #d00;
+  font-size: 0.85em;
+  margin-top: 4px;
+}
 
 @media (max-width: 768px) {
-  .container { padding:16px 4%; }
-  .main-table { display:block; overflow-x:auto; }
-  .thumb { width:60px; height:60px; }
-  .action-stack { flex-direction:row; flex-wrap:wrap; }
+  .container {
+    padding: 16px 4%;
+  }
+  .main-table {
+    display: block;
+    overflow-x: auto;
+  }
+  .thumb {
+    width: 60px;
+    height: 60px;
+  }
+  .action-stack {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
 }
 </style>

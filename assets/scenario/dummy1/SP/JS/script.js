@@ -1,5 +1,5 @@
 let app = new Vue({
-  el: "#app",
+  el: '#app',
   data: {
     kpc: 'KPC',
     pc: 'PC',
@@ -7,15 +7,15 @@ let app = new Vue({
     menuOpen: false,
     spFlg: window.innerWidth <= 960,
   },
-  components: {    
+  components: {
     'header-page': header,
     'main-outline': mainOutline,
     'back-story': backStory,
-    'introduction': introduction,
-    'search': search,
-    'climax': climax,
+    introduction: introduction,
+    search: search,
+    climax: climax,
     'main-ending': mainEnding,
-    'afterword': afterWord,
+    afterword: afterWord,
     'footer-page': footer,
     'header-page-sp': headerSp,
     'main-outline-sp': mainOutlineSp,
@@ -62,10 +62,10 @@ let app = new Vue({
             this.page += 1;
             break;
         }
-        }else {
-          this.page = num;
-        }
-        window.scrollTo( 0, 0);
+      } else {
+        this.page = num;
+      }
+      window.scrollTo(0, 0);
     },
     copyParagraph(e) {
       const p = e.currentTarget.closest('p');
@@ -84,13 +84,13 @@ let app = new Vue({
 
       // 空行を除いた最小インデントを計算
       const indents = lines
-      .filter(line => line.trim().length > 0)
-      .map(line => line.match(/^(\s*)/)[0].length);
+        .filter((line) => line.trim().length > 0)
+        .map((line) => line.match(/^(\s*)/)[0].length);
 
       const minIndent = indents.length ? Math.min(...indents) : 0;
 
       // 共通インデントを削除
-      lines = lines.map(line => line.slice(minIndent));
+      lines = lines.map((line) => line.slice(minIndent));
 
       // 前後の空行を削除して結合
       text = lines.join('\n').trim();
@@ -108,12 +108,12 @@ let app = new Vue({
       btn.classList.remove('fade-back');
 
       setTimeout(() => {
-      btn.classList.add('fade-back');
+        btn.classList.add('fade-back');
       }, 500);
 
       setTimeout(() => {
-      btn.classList.remove('copied', 'fade-back');
+        btn.classList.remove('copied', 'fade-back');
       }, 1000);
-    }
-  }
-})
+    },
+  },
+});

@@ -1,6 +1,5 @@
 let climaxSp = {
-  template:
-  `<div class="main" id="page-4">
+  template: `<div class="main" id="page-4">
     <div class="textContents">
 <a class="boldItem">■テキスト</a><br>
 <p>
@@ -30,18 +29,18 @@ let climaxSp = {
     </div><br>
     </div>`,
   props: {
-    'kpc': {
+    kpc: {
       type: String,
-      default: ''
+      default: '',
     },
-    'pc': {
+    pc: {
       type: String,
-      default: ''
+      default: '',
     },
   },
   methods: {
-	copyParagraph(e) {
-      this.$emit("copy-paragraph" , e);
+    copyParagraph(e) {
+      this.$emit('copy-paragraph', e);
     },
-  }
-}
+  },
+};

@@ -72,81 +72,82 @@ let mainInfo = {
   props: {
     json: {
       type: Object,
-      required: true
+      required: true,
     },
   },
 
   data() {
     return {
       showCopied: false,
-      timeoutId: null
-    }
+      timeoutId: null,
+    };
   },
 
   methods: {
     formatText(data) {
-      if (!data) return ''
+      if (!data) return '';
       let replaced = data
-      .replaceAll(/〈/g, '<span class="ep-dice">〈')
-      .replaceAll(/〉/g, '〉</span>')
-      .replaceAll(/《/g, '<span class="danger">')
-      .replaceAll(/》/g, '</span>')
-      .replaceAll(/【/g, '<h5>【')
-      .replaceAll(/】/g, '】</h5>')
-      .replaceAll(/〔/g, '<span class="bold">')
-      .replaceAll(/〕/g, '</span>')
-      return replaced.replace(/\n/g, '<br>')
+        .replaceAll(/〈/g, '<span class="ep-dice">〈')
+        .replaceAll(/〉/g, '〉</span>')
+        .replaceAll(/《/g, '<span class="danger">')
+        .replaceAll(/》/g, '</span>')
+        .replaceAll(/【/g, '<h5>【')
+        .replaceAll(/】/g, '】</h5>')
+        .replaceAll(/〔/g, '<span class="bold">')
+        .replaceAll(/〕/g, '</span>');
+      return replaced.replace(/\n/g, '<br>');
     },
 
     formatTextKp(data) {
-      if (!data) return ''
-      return data.replace(/\n/g, '<br>')
+      if (!data) return '';
+      return data.replace(/\n/g, '<br>');
     },
 
     bgClass(style) {
-      let styleMap = ""
-      if(style === undefined){
-        style = ""
+      let styleMap = '';
+      if (style === undefined) {
+        style = '';
       }
-      if(style.includes("info")){
-        styleMap += " ep-info"
+      if (style.includes('info')) {
+        styleMap += ' ep-info';
       }
-      if(style.includes("branch")){
-        styleMap += " ep-branch"
+      if (style.includes('branch')) {
+        styleMap += ' ep-branch';
       }
-      if(style.includes("ho1")){
-        styleMap += " ep-ho1"
+      if (style.includes('ho1')) {
+        styleMap += ' ep-ho1';
       }
-      if(style.includes("ho2")){
-        styleMap += " ep-ho2"
+      if (style.includes('ho2')) {
+        styleMap += ' ep-ho2';
       }
-      if(style.includes("hide")){
-        styleMap += " ep-hide"
+      if (style.includes('hide')) {
+        styleMap += ' ep-hide';
       }
-      if(style.includes("indent")){
-        styleMap += " indent"
+      if (style.includes('indent')) {
+        styleMap += ' indent';
       }
-      return styleMap || ''
+      return styleMap || '';
     },
 
     copyText(data) {
-      if (!data) return
+      if (!data) return;
       let replaced = data
-      .replaceAll(/《/g, '')
-      .replaceAll(/》/g, '')
-      .replaceAll(/〔/g, '')
-      .replaceAll(/〕/g, '')
-      navigator.clipboard.writeText(replaced)
+        .replaceAll(/《/g, '')
+        .replaceAll(/》/g, '')
+        .replaceAll(/〔/g, '')
+        .replaceAll(/〕/g, '');
+      navigator.clipboard
+        .writeText(replaced)
         .then(() => this.showToast())
-        .catch(err => console.error('コピーに失敗しました:', err))
+        .catch((err) => console.error('コピーに失敗しました:', err));
     },
 
     showToast() {
-      this.showCopied = true
-      clearTimeout(this.timeoutId)
+      this.showCopied = true;
+      clearTimeout(this.timeoutId);
       this.timeoutId = setTimeout(() => {
-        this.showCopied = false
-      }, 1000)
-    }
-  }
-}
+        this.showCopied = false;
+      }, 1000);
+    },
+  },
+};

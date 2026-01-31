@@ -1,9 +1,20 @@
 <?php
+// セッション cookie を厳格化（本番では HTTPS を有効にしてください）
+$secure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
+session_set_cookie_params([
+    'lifetime' => 0,
+    'path' => '/',
+    'domain' => $_SERVER['HTTP_HOST'] ?? '',
+    'secure' => $secure,
+    'httponly' => true,
+    'samesite' => 'Lax'
+]);
 session_start();
 header('Content-Type: application/json');
 
-// 開発中のみ、Vite dev server からのアクセスを許可
-if ($_SERVER['HTTP_ORIGIN'] ?? false) {
+// 開発環境のみ任意のオリジンを許可する（Vite での開発時）
+$appEnv = getenv('APP_ENV') ?: getenv('APPLICATION_ENV');
+if (($appEnv === 'development' || $appEnv === 'local') && !empty($_SERVER['HTTP_ORIGIN'])) {
     header('Access-Control-Allow-Origin: ' . $_SERVER['HTTP_ORIGIN']);
     header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
     header('Access-Control-Allow-Headers: Content-Type');
@@ -43,18 +54,27 @@ if ($method === 'POST' && $action === 'login') {
     $data = json_decode(file_get_contents('php://input'), true);
     $password = $data['password'] ?? '';
 
-    if (password_verify($password, $PASSWORD_HASH)) {
+    // ハッシュが空の場合は外部で審査済みのためここでは失敗扱い
+    if ($PASSWORD_HASH && password_verify($password, $PASSWORD_HASH)) {
+        // セッション固定攻撃対策
+        session_regenerate_id(true);
         $_SESSION['admin'] = true;
         echo json_encode(['ok' => true]);
     } else {
         http_response_code(401);
-        echo json_encode(['ok' => false, 'message' => 'login failed']);
+        echo json_encode(['ok' => false, 'error' => 'authentication failed']);
     }
     exit;
 }
 
 // ===== ログアウト処理API =====
 if ($method === 'POST' && $action === 'logout') {
+    // セッション削除とクッキー破棄
+    $_SESSION = [];
+    if (ini_get('session.use_cookies')) {
+        $params = session_get_cookie_params();
+        setcookie(session_name(), '', time() - 42000, $params['path'], $params['domain'], $params['secure'], $params['httponly']);
+    }
     session_destroy();
     echo json_encode(['ok' => true]);
     exit;
@@ -63,7 +83,7 @@ if ($method === 'POST' && $action === 'logout') {
 // ===== ログイン状態チェックAPI =====
 if ($action === 'check') {
     echo json_encode([
-        'ok' => isset($_SESSION['admin']) && $_SESSION['admin'] === true
+        'ok' => !empty($_SESSION['admin']) && $_SESSION['admin'] === true
     ]);
     exit;
 }

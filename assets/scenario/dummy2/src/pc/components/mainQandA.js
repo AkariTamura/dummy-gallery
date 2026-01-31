@@ -1,5 +1,5 @@
 let mainQandA = {
-    template: `
+  template: `
       <div>
         <div class="story-contents" :id="json.id ? json.id : null">
           <h2>{{ json.titleEn }}</h2>
@@ -74,25 +74,25 @@ let mainQandA = {
         </div>
       </div>
     `,
-  
-    props: {
-      json: {
-        type: Object,
-        required: true
-      },
+
+  props: {
+    json: {
+      type: Object,
+      required: true,
     },
-  
-    data() {
-      return {
-        showCopied: false,
-        timeoutId: null
-      }
-    },
-  
-    methods: {
-      formatText(data) {
-        if (!data) return ''
-        let replaced = data
+  },
+
+  data() {
+    return {
+      showCopied: false,
+      timeoutId: null,
+    };
+  },
+
+  methods: {
+    formatText(data) {
+      if (!data) return '';
+      let replaced = data
         .replaceAll(/〈/g, '<span class="ep-dice">〈')
         .replaceAll(/〉/g, '〉</span>')
         .replaceAll(/《/g, '<span class="danger">')
@@ -100,48 +100,47 @@ let mainQandA = {
         .replaceAll(/【/g, '<h5>【')
         .replaceAll(/】/g, '】</h5>')
         .replaceAll(/〔/g, '<span class="bold">')
-        .replaceAll(/〕/g, '</span>')
-        return replaced.replace(/\n/g, '<br>')
-      },
-  
-      formatTextKp(data) {
-        if (!data) return ''
-        return data.replace(/\n/g, '<br>')
-      },
-  
-      bgClass(style) {
-        let styleMap = ""
-        if(style === undefined){
-          style = ""
-        }
-        if(style.includes("info")){
-          styleMap += " ep-info"
-        }
-        if(style.includes("branch")){
-          styleMap += " ep-branch"
-        }
-        if(style.includes("ho1")){
-          styleMap += " ep-ho1"
-        }
-        if(style.includes("ho2")){
-          styleMap += " ep-ho2"
-        }
-        if(style.includes("hide")){
-          styleMap += " ep-hide"
-        }
-        if(style.includes("indent")){
-          styleMap += " indent"
-        }
-        return styleMap || ''
-      },
-  
-      showToast() {
-        this.showCopied = true
-        clearTimeout(this.timeoutId)
-        this.timeoutId = setTimeout(() => {
-          this.showCopied = false
-        }, 1000)
+        .replaceAll(/〕/g, '</span>');
+      return replaced.replace(/\n/g, '<br>');
+    },
+
+    formatTextKp(data) {
+      if (!data) return '';
+      return data.replace(/\n/g, '<br>');
+    },
+
+    bgClass(style) {
+      let styleMap = '';
+      if (style === undefined) {
+        style = '';
       }
-    }
-  }
-  
+      if (style.includes('info')) {
+        styleMap += ' ep-info';
+      }
+      if (style.includes('branch')) {
+        styleMap += ' ep-branch';
+      }
+      if (style.includes('ho1')) {
+        styleMap += ' ep-ho1';
+      }
+      if (style.includes('ho2')) {
+        styleMap += ' ep-ho2';
+      }
+      if (style.includes('hide')) {
+        styleMap += ' ep-hide';
+      }
+      if (style.includes('indent')) {
+        styleMap += ' indent';
+      }
+      return styleMap || '';
+    },
+
+    showToast() {
+      this.showCopied = true;
+      clearTimeout(this.timeoutId);
+      this.timeoutId = setTimeout(() => {
+        this.showCopied = false;
+      }, 1000);
+    },
+  },
+};

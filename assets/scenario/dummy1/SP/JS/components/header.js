@@ -45,8 +45,8 @@ let headerSp = {
         { href: '#page-3', label: '探索' },
         { href: '#page-4', label: 'クライマックス' },
         { href: '#page-5', label: 'エンディング' },
-        { href: '#page-6', label: 'あとがき' }
-      ]
+        { href: '#page-6', label: 'あとがき' },
+      ],
     };
   },
   methods: {
@@ -57,17 +57,13 @@ let headerSp = {
       const target = document.querySelector(targetId);
       if (!target) return;
 
-      const headerHeight =
-        parseFloat(getComputedStyle(document.documentElement).fontSize) * 5;
+      const headerHeight = parseFloat(getComputedStyle(document.documentElement).fontSize) * 5;
 
-      const targetPosition =
-        target.getBoundingClientRect().top +
-        window.scrollY -
-        headerHeight;
+      const targetPosition = target.getBoundingClientRect().top + window.scrollY - headerHeight;
 
       window.scrollTo({
         top: targetPosition,
-        behavior: 'smooth'
+        behavior: 'smooth',
       });
 
       this.menuOpen = false;
@@ -81,14 +77,11 @@ let headerSp = {
       sections.forEach((section, index) => {
         const rect = section.getBoundingClientRect();
 
-        if (
-          rect.top <= windowHeight * 0.5 &&
-          rect.bottom >= windowHeight * 0.5
-        ) {
+        if (rect.top <= windowHeight * 0.5 && rect.bottom >= windowHeight * 0.5) {
           this.currentIndex = index;
         }
       });
-    }
+    },
   },
 
   mounted() {
@@ -98,5 +91,5 @@ let headerSp = {
 
   beforeUnmount() {
     window.removeEventListener('scroll', this.updateNow);
-  }
+  },
 };

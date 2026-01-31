@@ -1,7 +1,7 @@
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
-import path from 'path'
-import { viteStaticCopy } from 'vite-plugin-static-copy'
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
+import path from 'path';
+import { viteStaticCopy } from 'vite-plugin-static-copy';
 
 export default defineConfig(() => ({
   plugins: [
@@ -10,10 +10,10 @@ export default defineConfig(() => ({
       targets: [
         {
           src: 'assets/scenario/**/*',
-          dest: 'scenario'
-        }
-      ]
-    })
+          dest: 'scenario',
+        },
+      ],
+    }),
   ],
   base: '/dummy/',
   root: '.', // 既存のプロジェクト直下をルートにする
@@ -22,15 +22,15 @@ export default defineConfig(() => ({
       '@': path.resolve(__dirname, './'),
       '@/composable': path.resolve(__dirname, './composable'),
       '@/util': path.resolve(__dirname, './util'),
-      '@/assets': path.resolve(__dirname, './assets')
-    }
+      '@/assets': path.resolve(__dirname, './assets'),
+    },
   },
   build: {
-    outDir: 'dist' // ビルド後の出力先
+    outDir: 'dist', // ビルド後の出力先
   },
   server: {
     proxy: {
-      '/api': 'http://localhost:8000' // /api/* を PHP サーバーに転送
-    }
-  }
-}))
+      '/api': 'http://localhost:8000', // /api/* を PHP サーバーに転送
+    },
+  },
+}));

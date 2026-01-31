@@ -1,44 +1,121 @@
 <!DOCTYPE html>
 <html lang="ja">
-<head>
- <meta charset="UTF-8" />
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <title> DUMMY1 </title>
-<meta name="description" content="">
-<link rel="stylesheet" href="SP/CSS/destyle.css">
-<link rel="stylesheet" href="SP/CSS/style.css">
-<link rel="stylesheet" href="PC/CSS/style.css">
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DUMMY1</title>
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="SP/CSS/destyle.css" />
+    <link rel="stylesheet" href="SP/CSS/style.css" />
+    <link rel="stylesheet" href="PC/CSS/style.css" />
+  </head>
+  <body>
     <div id="app">
-        <!-- ヘッダー -->
-        <header-page-sp v-if='spFlg === true'></header-page-sp>
-        <!-- 本文 -->
-        <main-outline-sp :kpc="kpc" :pc="pc" @kpc-name-change="kpcNameChange" @pc-name-change="pcNameChange" v-if='spFlg === true'></main-outline-sp>
-        <back-story-sp  :kpc="kpc" :pc="pc" v-if='spFlg === true' @copy-paragraph="copyParagraph"></back-story-sp>
-        <introduction-sp  :kpc="kpc" :pc="pc" v-if='spFlg === true' @copy-paragraph="copyParagraph"></introduction-sp>
-        <search-sp  :kpc="kpc" :pc="pc" v-if='spFlg === true' @copy-paragraph="copyParagraph"></search-sp>
-        <climax-sp  :kpc="kpc" :pc="pc" v-if='spFlg === true' @copy-paragraph="copyParagraph"></climax-sp>
-        <main-ending-sp  :kpc="kpc" v-if='spFlg === true' @copy-paragraph="copyParagraph"></main-ending-sp>
-        <afterword-sp  :kpc="kpc" :pc="pc" v-if='spFlg === true'></afterword-sp>
+      <!-- ヘッダー -->
+      <header-page-sp v-if="spFlg === true"></header-page-sp>
+      <!-- 本文 -->
+      <main-outline-sp
+        :kpc="kpc"
+        :pc="pc"
+        @kpc-name-change="kpcNameChange"
+        @pc-name-change="pcNameChange"
+        v-if="spFlg === true"
+      ></main-outline-sp>
+      <back-story-sp
+        :kpc="kpc"
+        :pc="pc"
+        v-if="spFlg === true"
+        @copy-paragraph="copyParagraph"
+      ></back-story-sp>
+      <introduction-sp
+        :kpc="kpc"
+        :pc="pc"
+        v-if="spFlg === true"
+        @copy-paragraph="copyParagraph"
+      ></introduction-sp>
+      <search-sp
+        :kpc="kpc"
+        :pc="pc"
+        v-if="spFlg === true"
+        @copy-paragraph="copyParagraph"
+      ></search-sp>
+      <climax-sp
+        :kpc="kpc"
+        :pc="pc"
+        v-if="spFlg === true"
+        @copy-paragraph="copyParagraph"
+      ></climax-sp>
+      <main-ending-sp
+        :kpc="kpc"
+        v-if="spFlg === true"
+        @copy-paragraph="copyParagraph"
+      ></main-ending-sp>
+      <afterword-sp :kpc="kpc" :pc="pc" v-if="spFlg === true"></afterword-sp>
 
-        <!-- PC画面 -->
-        <!-- ヘッダー -->
-        <header-page :page="page"  @page-change="pageChange" v-if='spFlg === false'></header-page>
-        <!-- 本文 -->
-        <main-outline :kpc="kpc" :pc="pc" @kpc-name-change="kpcNameChange" @pc-name-change="pcNameChange" v-if='page === 0 && spFlg === false'></main-outline>
-        <back-story  :kpc="kpc" :pc="pc" v-if='page === 1 && spFlg === false' @copy-paragraph="copyParagraph"></back-story>
-        <introduction  :kpc="kpc" :pc="pc" v-if='page === 2 && spFlg === false' @copy-paragraph="copyParagraph"></introduction>
-        <search  :kpc="kpc" :pc="pc" v-if='page === 3 && spFlg === false' @copy-paragraph="copyParagraph"></search>
-        <climax  :kpc="kpc" :pc="pc" v-if='page === 4 && spFlg === false' @copy-paragraph="copyParagraph"></climax>
-        <main-ending  :kpc="kpc" :pc="pc" v-if='page === 5 && spFlg === false' @copy-paragraph="copyParagraph"></main-ending>
-        <afterword  :kpc="kpc" :pc="pc" v-if='page === 6 && spFlg === false'></afterword>
-        <!-- ページ移動ボタン -->
-        <div class="underBtn" id="btnLeft" v-bind:class="{ hidden: page === 0}" @click="pageChange(7)" v-if='spFlg === false'><div class="Arrow-left-box"><div class="Arrow-left"></div></div></div>
-        <div class="underBtn" id="btnRight" v-bind:class="{ hidden: page === 6}" @click="pageChange(8)" v-if='spFlg === false'><div class="Arrow-right-box"><div class="Arrow-right"></div></div></div>
-        
-        <!-- フッター -->
-        <footer-page></footer-page>
+      <!-- PC画面 -->
+      <!-- ヘッダー -->
+      <header-page :page="page" @page-change="pageChange" v-if="spFlg === false"></header-page>
+      <!-- 本文 -->
+      <main-outline
+        :kpc="kpc"
+        :pc="pc"
+        @kpc-name-change="kpcNameChange"
+        @pc-name-change="pcNameChange"
+        v-if="page === 0 && spFlg === false"
+      ></main-outline>
+      <back-story
+        :kpc="kpc"
+        :pc="pc"
+        v-if="page === 1 && spFlg === false"
+        @copy-paragraph="copyParagraph"
+      ></back-story>
+      <introduction
+        :kpc="kpc"
+        :pc="pc"
+        v-if="page === 2 && spFlg === false"
+        @copy-paragraph="copyParagraph"
+      ></introduction>
+      <search
+        :kpc="kpc"
+        :pc="pc"
+        v-if="page === 3 && spFlg === false"
+        @copy-paragraph="copyParagraph"
+      ></search>
+      <climax
+        :kpc="kpc"
+        :pc="pc"
+        v-if="page === 4 && spFlg === false"
+        @copy-paragraph="copyParagraph"
+      ></climax>
+      <main-ending
+        :kpc="kpc"
+        :pc="pc"
+        v-if="page === 5 && spFlg === false"
+        @copy-paragraph="copyParagraph"
+      ></main-ending>
+      <afterword :kpc="kpc" :pc="pc" v-if="page === 6 && spFlg === false"></afterword>
+      <!-- ページ移動ボタン -->
+      <div
+        class="underBtn"
+        id="btnLeft"
+        v-bind:class="{ hidden: page === 0}"
+        @click="pageChange(7)"
+        v-if="spFlg === false"
+      >
+        <div class="Arrow-left-box"><div class="Arrow-left"></div></div>
+      </div>
+      <div
+        class="underBtn"
+        id="btnRight"
+        v-bind:class="{ hidden: page === 6}"
+        @click="pageChange(8)"
+        v-if="spFlg === false"
+      >
+        <div class="Arrow-right-box"><div class="Arrow-right"></div></div>
+      </div>
+
+      <!-- フッター -->
+      <footer-page></footer-page>
     </div>
     <script src="./SP/JS/vue.min.js"></script>
     <script src="./SP/JS/components/header.js"></script>
@@ -59,5 +136,5 @@
     <script src="./PC/JS/components/afterWord.js"></script>
     <script src="./PC/JS/components/footer.js"></script>
     <script src="./SP/JS/script.js"></script>
-</body>
+  </body>
 </html>

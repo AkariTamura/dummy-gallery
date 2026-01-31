@@ -89,45 +89,45 @@ let mainTextSp = {
   props: {
     common: {
       type: Object,
-      required: true
+      required: true,
     },
     jsonList: {
       type: Array,
-      required: true
+      required: true,
     },
     flg: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
 
   data() {
     return {
       showCopied: false,
-      timeoutId: null
-    }
+      timeoutId: null,
+    };
   },
 
   methods: {
     shouldShowStory(story) {
       // story に flgT / flgF がない場合は常に表示
       if (!story.flgT && !story.flgF) return true;
-    
+
       let show = true;
-    
+
       // flgが存在する場合
       if (story.flgT) {
         // 空白で分割して配列にする
         const flgTArray = story.flgT.split(/\s+/);
         // どれか一つでも true なら表示
-        show = flgTArray.some(flgName => !!this.flg[flgName]);
+        show = flgTArray.some((flgName) => !!this.flg[flgName]);
       }
-    
+
       // flgが存在しない場合
       if (story.flgF) {
         const flgFArray = story.flgF.split(/\s+/);
         // どれか一つでもfalseなら表示
-        if (!flgFArray.some(flgName => !!this.flg[flgName])) {
+        if (!flgFArray.some((flgName) => !!this.flg[flgName])) {
           show = true;
         } else {
           // すべて true なら非表示
@@ -135,13 +135,13 @@ let mainTextSp = {
         }
       }
       return show;
-    },    
+    },
 
     formatText(data) {
-        if (this.common.ho1bro === undefined) {
-          console.trace('ho1bro undefined');
-        }
-      if (!data) return ''
+      if (this.common.ho1bro === undefined) {
+        console.trace('ho1bro undefined');
+      }
+      if (!data) return '';
       let replaced = data
         .replaceAll('{ho1}', this.common.ho1)
         .replaceAll('{ho2}', this.common.ho2)
@@ -159,49 +159,49 @@ let mainTextSp = {
         .replaceAll(/【/g, '<h5>【')
         .replaceAll(/】/g, '】</h5>')
         .replaceAll(/〔/g, '<span class="bold">')
-        .replaceAll(/〕/g, '</span>')
-      return replaced.replace(/\n/g, '<br>')
+        .replaceAll(/〕/g, '</span>');
+      return replaced.replace(/\n/g, '<br>');
     },
 
     formatTextKp(data) {
-      if (!data) return ''
+      if (!data) return '';
       let replaced = data
-      .replaceAll(/《/g, '<span class="danger">')
-      .replaceAll(/》/g, '</span>')
-      .replaceAll(/〔/g, '<span class="bold">')
-      .replaceAll(/〕/g, '</span>')
-      return replaced.replace(/\n/g, '<br>')
+        .replaceAll(/《/g, '<span class="danger">')
+        .replaceAll(/》/g, '</span>')
+        .replaceAll(/〔/g, '<span class="bold">')
+        .replaceAll(/〕/g, '</span>');
+      return replaced.replace(/\n/g, '<br>');
     },
 
     bgClass(style) {
-      let styleMap = ""
-      if(style === undefined){
-        style = ""
+      let styleMap = '';
+      if (style === undefined) {
+        style = '';
       }
-      if(style.includes("info")){
-        styleMap += " ep-info"
+      if (style.includes('info')) {
+        styleMap += ' ep-info';
       }
-      if(style.includes("branch")){
-        styleMap += " ep-branch"
+      if (style.includes('branch')) {
+        styleMap += ' ep-branch';
       }
-      if(style.includes("ho1")){
-        styleMap += " ep-ho1"
+      if (style.includes('ho1')) {
+        styleMap += ' ep-ho1';
       }
-      if(style.includes("ho2")){
-        styleMap += " ep-ho2"
+      if (style.includes('ho2')) {
+        styleMap += ' ep-ho2';
       }
-      if(style.includes("hide")){
-        styleMap += " ep-hide"
+      if (style.includes('hide')) {
+        styleMap += ' ep-hide';
       }
-      if(style.includes("indent")){
-        styleMap += " indent"
+      if (style.includes('indent')) {
+        styleMap += ' indent';
       }
-      return styleMap || ''
+      return styleMap || '';
     },
 
     copyText(data) {
       if (!data) return;
-    
+
       // 変数展開・タグ置換など
       let replaced = data
         .replaceAll('{ho1}', this.common.ho1)
@@ -217,15 +217,15 @@ let mainTextSp = {
         .replaceAll(/》/g, '')
         .replaceAll(/〔/g, '')
         .replaceAll(/〕/g, '');
-    
+
       const temp = document.createElement('div');
       temp.innerHTML = replaced;
       // <a>タグ → テキストに変換
-      temp.querySelectorAll('a').forEach(a => {
+      temp.querySelectorAll('a').forEach((a) => {
         a.replaceWith(document.createTextNode(a.textContent));
       });
       // <br>タグ → 改行に変換
-      temp.querySelectorAll('br').forEach(br => {
+      temp.querySelectorAll('br').forEach((br) => {
         br.replaceWith('\n');
       });
       // プレーンテキストとして抽出
@@ -233,18 +233,19 @@ let mainTextSp = {
         .replace(/\u00A0/g, ' ') // &nbsp; → 半角スペース
         .replace(/\s+\n/g, '\n') // 改行周りの余計な空白を削除
         .trim();
-    
-      navigator.clipboard.writeText(plainText)
+
+      navigator.clipboard
+        .writeText(plainText)
         .then(() => this.showToast())
-        .catch(err => console.error('コピーに失敗しました:', err));
-    },    
+        .catch((err) => console.error('コピーに失敗しました:', err));
+    },
 
     showToast() {
-      this.showCopied = true
-      clearTimeout(this.timeoutId)
+      this.showCopied = true;
+      clearTimeout(this.timeoutId);
       this.timeoutId = setTimeout(() => {
-        this.showCopied = false
-      }, 1000)
-    }
-  }
-}
+        this.showCopied = false;
+      }, 1000);
+    },
+  },
+};

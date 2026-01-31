@@ -1,6 +1,5 @@
 let introduction = {
-  template:
-  `<div class="main">
+  template: `<div class="main">
     <div class="textContents">
 		<br><a class="boldItem">■テキスト</a><br>
 <p>
@@ -30,22 +29,22 @@ let introduction = {
     </div>
   </div>`,
   props: {
-    'kpc': {
+    kpc: {
       type: String,
-      default: ''
+      default: '',
     },
-    'pc': {
+    pc: {
       type: String,
-      default: ''
+      default: '',
     },
-    'mob': {
+    mob: {
       type: String,
-      default: '鈴木'
+      default: '鈴木',
     },
   },
   methods: {
-	copyParagraph(e) {
-      this.$emit("copy-paragraph" , e);
+    copyParagraph(e) {
+      this.$emit('copy-paragraph', e);
     },
-  }
-}
+  },
+};

@@ -1,14 +1,14 @@
-  @media screen and (max-width:960px) {
+@media screen and (max-width: 960px) {
   /* 基本設定 */
-  body{
+  body {
     color: #68666c;
     background: #d2ddde;
     font-size: 16px;
-    font-family: "游ゴシック体", YuGothic, "游ゴシック", "Yu Gothic", sans-serif;
+    font-family: '游ゴシック体', YuGothic, '游ゴシック', 'Yu Gothic', sans-serif;
     width: 100%;
   }
-  img{
-    width: 100%
+  img {
+    width: 100%;
   }
   hr {
     border-top: 2px dotted;
@@ -16,29 +16,29 @@
     border-bottom: none;
     border-left: none;
   }
-  button{
+  button {
     outline: none;
     color: #68666c;
   }
 
   /* ヘッダー */
-  .headerPage{
+  .headerPage {
     width: 100%;
     position: fixed;
     content: '';
     z-index: 2;
   }
 
-  #headerTitle{
+  #headerTitle {
     font-weight: bold;
     font-size: 26px;
     color: #fe6d30;
-    font-family: "Arial Black", "Helvetica Black	";
+    font-family: 'Arial Black', 'Helvetica Black	';
     user-select: none;
     z-index: 2;
     line-height: 36px;
   }
-  .headerCountents{
+  .headerCountents {
     position: fixed;
     width: 100%;
     padding: 16px;
@@ -47,19 +47,19 @@
     z-index: 2;
     display: flex;
     justify-content: space-between;
-    top:0;
-    left:0;
+    top: 0;
+    left: 0;
     background: #68666c;
-    cursor:default;
+    cursor: default;
     color: #d2ddde;
   }
-  .now{
+  .now {
     color: #fe6d30;
   }
 
   /* ハンバーガー本体 */
 
-  .hamburgerWrap{
+  .hamburgerWrap {
     width: auto;
     height: auto;
     justify-content: center;
@@ -75,7 +75,7 @@
     cursor: pointer;
   }
 
-  .hamburger.open{
+  .hamburger.open {
     width: 36px;
     height: 16px;
   }
@@ -100,7 +100,7 @@
     width: 100%;
     height: 100%;
     z-index: 1;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     transition: right 0.3s ease;
     display: flex;
     justify-content: center;
@@ -109,9 +109,9 @@
     padding: 30px;
   }
 
-  .menu a{
+  .menu a {
     padding-top: 1.2rem;
-      padding-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
   }
 
   .menu a + a {
@@ -136,127 +136,123 @@
     transform: rotate(-45deg) translate(5px, -5px);
   }
 
-
   /* メイン総合 */
-  .main{
+  .main {
     position: relative;
-    margin:auto;
-    width:100%;
+    margin: auto;
+    width: 100%;
     z-index: 0;
     user-select: text;
     cursor: text;
     font-size: 16px;
   }
   /* アウトライン */
-  #outlineLogo{
+  #outlineLogo {
     position: relative;
     width: 90%;
-    margin:auto;
+    margin: auto;
     padding: 8rem 0 4rem 0;
     max-width: 800px;
     z-index: 0;
   }
-  #outlineContents{
+  #outlineContents {
     position: relative;
     width: 80%;
-    margin:auto;
+    margin: auto;
     z-index: 0;
   }
-  #page-0 hr{
+  #page-0 hr {
     width: 80%;
     text-align: center;
     margin: 0 auto;
   }
-  #outlineContents hr{
+  #outlineContents hr {
     width: 100%;
   }
-  #nameChange{
+  #nameChange {
     padding: 1.6rem 0;
   }
-  #nameChange input{
-      border: solid 1px;
-      background: #fff;
-      margin-bottom: 8px;
-      margin-right: 4px;
-    padding:0 2px;
-      border-radius: 2px;
+  #nameChange input {
+    border: solid 1px;
+    background: #fff;
+    margin-bottom: 8px;
+    margin-right: 4px;
+    padding: 0 2px;
+    border-radius: 2px;
   }
-  #nameChange button{
+  #nameChange button {
     outline: none;
-      color: #68666c;
-      border: solid 1px;
-      border-radius: 2px;
-      margin-bottom: 8px;
+    color: #68666c;
+    border: solid 1px;
+    border-radius: 2px;
+    margin-bottom: 8px;
   }
-  .nameChangeForm span{
-    width:5.6rem;
-    text-align:center;
+  .nameChangeForm span {
+    width: 5.6rem;
+    text-align: center;
   }
-  .nameChangeForm{
+  .nameChangeForm {
     margin: 0.4rem auto;
   }
 
-
   /* 本文 */
-  .textContents{
+  .textContents {
     width: 80%;
-    margin:auto;
+    margin: auto;
     padding-bottom: 32px;
   }
 
-  .dice{
-    background: linear-gradient(transparent 60%, rgba(254,109,48,0.35) 60%);
+  .dice {
+    background: linear-gradient(transparent 60%, rgba(254, 109, 48, 0.35) 60%);
   }
 
-  .item{
-    background: linear-gradient(transparent 60%, rgba(104,102,108,0.25) 60%);
+  .item {
+    background: linear-gradient(transparent 60%, rgba(104, 102, 108, 0.25) 60%);
   }
 
-  .kp{
-    color: rgba(104,102,108,0.4);
+  .kp {
+    color: rgba(104, 102, 108, 0.4);
   }
 
-  .boldItem{
+  .boldItem {
     font-weight: bold;
   }
 
-  .topicItem{
+  .topicItem {
     font-size: 26px;
     padding-bottom: 16px;
   }
 
-
   /* フッター */
-  .footerPage{
-    width:90%;
+  .footerPage {
+    width: 90%;
     height: 15vh;
     padding-bottom: 1.6rem;
-    margin:auto;
-    display:flex;
+    margin: auto;
+    display: flex;
     justify-content: center;
     align-items: center;
     z-index: 5;
   }
-  #spllImg{
-    width:120px;
+  #spllImg {
+    width: 120px;
   }
-  #spllContents{
+  #spllContents {
     font-size: 0.7rem;
     padding-left: 0.8rem;
   }
 
   /* その他 */
-  .hidden{
-    visibility:hidden;
+  .hidden {
+    visibility: hidden;
   }
 
-  @media screen and (max-width:374px) {
-    body{
+  @media screen and (max-width: 374px) {
+    body {
       width: 310px;
     }
-
   }
-  @media screen and (min-width:767px) {
+  @media screen and (min-width: 767px) {
     .menu {
       width: 30%;
     }

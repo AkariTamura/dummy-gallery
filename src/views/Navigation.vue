@@ -12,29 +12,29 @@
 
 <style scoped>
 .nav-header {
-  position:fixed;
-  top:0;
-  left:0;
-  right:0;
-  height:56px;
-  background:#fff;
-  border-bottom:1px solid #e6e6e6;
-  z-index:1000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 56px;
+  background: #fff;
+  border-bottom: 1px solid #e6e6e6;
+  z-index: 1000;
 }
 .nav-inner {
-  height:100%;
-  display:flex;
-  align-items:center;
-  gap:16px;
-  padding:0 10%;
-  text-align:left;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 10%;
+  text-align: left;
 }
 .nav-inner a {
-  text-decoration:none;
-  color:#333;
-  font-weight:600;
+  text-decoration: none;
+  color: #333;
+  font-weight: 600;
 }
 .nav-inner a:hover {
-  color:#28a745;
+  color: #28a745;
 }
 </style>

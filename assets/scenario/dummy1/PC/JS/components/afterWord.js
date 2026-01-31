@@ -1,6 +1,5 @@
 let afterWord = {
-  template:
-  `<div class="main">
+  template: `<div class="main">
     <div class="textContents">
 <a class="boldItem topicItem">【シナリオについて】</a><br>
 
@@ -32,15 +31,14 @@ let afterWord = {
     </div>
     </div>`,
   props: {
-    'kpc': {
+    kpc: {
       type: String,
-      default: ''
+      default: '',
     },
-    'pc': {
+    pc: {
       type: String,
-      default: ''
+      default: '',
     },
   },
-  methods: {
-  }
-}
+  methods: {},
+};

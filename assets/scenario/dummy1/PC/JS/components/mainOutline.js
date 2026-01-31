@@ -1,6 +1,5 @@
 let mainOutline = {
-  template:
-  `<div class="main">
+  template: `<div class="main">
     <div id="outlineLogo">
       ロゴ画像
     </div>
@@ -33,21 +32,21 @@ let mainOutline = {
 </p>
   </div>`,
   props: {
-    'kpc': {
+    kpc: {
       type: String,
-      default: ''
+      default: '',
     },
-    'pc': {
+    pc: {
       type: String,
-      default: ''
-    }
+      default: '',
+    },
   },
   methods: {
     kpcNameChange() {
-      this.$emit("kpc-name-change" , kpcName.value);
+      this.$emit('kpc-name-change', kpcName.value);
     },
     pcNameChange() {
-      this.$emit("pc-name-change", pcName.value);
+      this.$emit('pc-name-change', pcName.value);
     },
-  }
-}
+  },
+};

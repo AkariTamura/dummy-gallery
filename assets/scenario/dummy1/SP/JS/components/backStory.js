@@ -1,6 +1,5 @@
 let backStorySp = {
-  template:
-  `<div class="main" id="page-1">
+  template: `<div class="main" id="page-1">
     <div class="textContents">
 		<a class="boldItem topicItem">【コンセプト】</a><br>
 <br><a class="boldItem">■テキスト</a><br>
@@ -31,18 +30,18 @@ let backStorySp = {
     </div>
   </div>`,
   props: {
-    'kpc': {
+    kpc: {
       type: String,
-      default: ''
+      default: '',
     },
-    'pc': {
+    pc: {
       type: String,
-      default: ''
+      default: '',
     },
   },
   methods: {
-	copyParagraph(e) {
-      this.$emit("copy-paragraph" , e);
+    copyParagraph(e) {
+      this.$emit('copy-paragraph', e);
     },
-  }
-}
+  },
+};

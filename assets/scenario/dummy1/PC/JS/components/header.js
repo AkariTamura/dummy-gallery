@@ -1,6 +1,5 @@
 let header = {
-  template:
-  `<div class="headerPage">
+  template: `<div class="headerPage">
     <div class="headerCountents">
       <div id="headerTitle">
         DUMMY1
@@ -11,13 +10,13 @@ let header = {
     </div>
   </div>`,
   props: {
-    'page': {
-      type: Number
+    page: {
+      type: Number,
     },
   },
   methods: {
-    pageChange(num){
-      this.$emit("page-change", num);
-    }
-  }
-}
+    pageChange(num) {
+      this.$emit('page-change', num);
+    },
+  },
+};
