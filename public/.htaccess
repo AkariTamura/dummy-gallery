@@ -1,0 +1,155 @@
+<?php
+declare(strict_types=1);
+
+// Minimal share endpoint that returns HTML with OGP meta tags for crawlers.
+// Usage: share.php?type=investigator&id=123  or  share.php?type=illust&id=45
+
+header('Content-Type: text/html; charset=utf-8');
+
+$type = $_GET['type'] ?? null;
+$id = $_GET['id'] ?? null;
+
+// Fallback: if rewrite didn't populate query params, try parse from REQUEST_URI
+if ((empty($type) || empty($id)) && !empty($_SERVER['REQUEST_URI'])) {
+	$uri = $_SERVER['REQUEST_URI'];
+	// try patterns with and without /dummy/ prefix
+	if (preg_match('#/dummy/illust/view/([0-9]+)#', $uri, $m) || preg_match('#/illust/view/([0-9]+)#', $uri, $m)) {
+		$type = 'illust';
+		$id = $m[1];
+	} elseif (preg_match('#/dummy/character/view/([0-9]+)#', $uri, $m) || preg_match('#/character/view/([0-9]+)#', $uri, $m)) {
+		$type = 'investigator';
+		$id = $m[1];
+	}
+	// expose small debug header if debug query provided
+	if (isset($_GET['debug']) && $_GET['debug']) {
+		header('X-Share-Debug: parsed-from-uri');
+		header('X-Share-Parsed-Type: ' . ($type ?? ''));
+		header('X-Share-Parsed-Id: ' . ($id ?? ''));
+	}
+}
+
+$basePrefix = '';
+$referer = $_SERVER['HTTP_REFERER'] ?? '';
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+if (strpos($_SERVER['REQUEST_URI'], '/dummy/') !== false || strpos($referer, '/dummy/') !== false || strpos($origin, '/dummy/') !== false) {
+	$basePrefix = '/dummy/';
+}
+
+// default site meta
+$siteTitle = 'デモサイト';
+$siteDesc = 'デモサイトの説明です。';
+$siteImage = 'favicon.svg';
+
+// helper to join URL parts without duplicate slashes
+function join_url($base, $path) {
+	return rtrim($base, '/') . '/' . ltrim($path, '/');
+}
+
+// host base for absolute URLs
+$scheme = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+$host = $_SERVER['HTTP_HOST'] ?? '';
+$hostBase = rtrim($scheme . '://' . $host, '/');
+// include basePrefix when joining paths
+
+$og = [
+	'title' => $siteTitle,
+	'description' => $siteDesc,
+	'image' => join_url($hostBase . $basePrefix, $siteImage),
+	'url' => join_url($hostBase, ($_SERVER['REQUEST_URI'] ?? '')),
+];
+
+if ($type === 'investigator' && $id) {
+	try {
+		$db = new PDO('sqlite:' .  __DIR__ . '/db/investigatorsDB');
+		$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+		$stmt = $db->prepare('SELECT * FROM investigators WHERE id = ? LIMIT 1');
+		$stmt->execute([$id]);
+		$row = $stmt->fetch(PDO::FETCH_ASSOC);
+		if ($row) {
+			$name = trim(($row['fullname'] ?? '') ?: ($row['name'] ?? '')) ?: $siteTitle;
+			$desc = trim($row['detail'] ?? $row['job'] ?? '') ?: $siteDesc;
+			$thumbRel = dirname(__DIR__) . '/assets/img/investigator/thumb/' . $row['id'] . '.png';
+			if (file_exists($thumbRel)) {
+				$imageUrl = join_url($hostBase . $basePrefix, 'assets/img/investigator/thumb/' . $row['id'] . '.png');
+			} else {
+				// fallback to image endpoint (absolute URL)
+				$imageUrl = join_url($hostBase . $basePrefix, 'api/investigator.php?mode=investigator_image&id=' . urlencode($row['id']));
+			}
+			$og['title'] = $name;
+			$og['description'] = $desc;
+			$og['image'] = $imageUrl;
+			$og['url'] = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http') . '://' . ($_SERVER['HTTP_HOST'] ?? '') . $basePrefix . 'character/view/' . urlencode($row['id']);
+		}
+	} catch (Throwable $e) {
+		// keep defaults
+	}
+} elseif ($type === 'illust' && $id) {
+	try {
+		$db = new PDO('sqlite:' . __DIR__ . '/db/illustDB');
+		$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+		$stmt = $db->prepare('SELECT * FROM illust WHERE id = ? LIMIT 1');
+		$stmt->execute([(int)$id]);
+		$row = $stmt->fetch(PDO::FETCH_ASSOC);
+		if ($row) {
+			$title = trim($row['title'] ?? '') ?: $siteTitle;
+			$desc = trim($row['caption'] ?? '') ?: $siteDesc;
+			$ext = $row['ext'] ?? 'jpg';
+			$thumbPath = dirname(__DIR__) . '/assets/img/illust/thumb/' . $row['id'] . '.jpg';
+			if (file_exists($thumbPath)) {
+				$imageUrl = join_url($hostBase . $basePrefix, 'assets/img/illust/thumb/' . $row['id'] . '.jpg');
+			} else {
+				$imageUrl = join_url($hostBase . $basePrefix, 'assets/img/illust/' . $row['id'] . '.' . $ext);
+			}
+			$og['title'] = $title;
+			$og['description'] = $desc;
+			$og['image'] = $imageUrl;
+			$og['url'] = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http') . '://' . ($_SERVER['HTTP_HOST'] ?? '') . $basePrefix . 'illust/view/' . urlencode($row['id']);
+		} else {
+			$og['description'] = 'DB NOT FOUND: id=' . $id;
+		}
+	} catch (Throwable $e) {
+		$og['description'] = 'DB ERROR: ' . $e->getMessage();
+	}
+}
+
+// emit minimal HTML with meta tags
+?><!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title><?php echo htmlspecialchars($og['title'], ENT_QUOTES | ENT_SUBSTITUTE); ?></title>
+  <meta property="og:locale" content="ja_JP" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="<?php echo htmlspecialchars($og['title'], ENT_QUOTES | ENT_SUBSTITUTE); ?>" />
+  <meta property="og:description" content="<?php echo htmlspecialchars($og['description'], ENT_QUOTES | ENT_SUBSTITUTE); ?>" />
+  <meta property="og:image" content="<?php echo htmlspecialchars($og['image'], ENT_QUOTES | ENT_SUBSTITUTE); ?>" />
+  <meta property="og:url" content="<?php echo htmlspecialchars($og['url'], ENT_QUOTES | ENT_SUBSTITUTE); ?>" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="<?php echo htmlspecialchars($og['title'], ENT_QUOTES | ENT_SUBSTITUTE); ?>" />
+  <meta name="twitter:description" content="<?php echo htmlspecialchars($og['description'], ENT_QUOTES | ENT_SUBSTITUTE); ?>" />
+  <meta name="twitter:image" content="<?php echo htmlspecialchars($og['image'], ENT_QUOTES | ENT_SUBSTITUTE); ?>" />
+  <link rel="canonical" href="<?php echo htmlspecialchars($og['url'], ENT_QUOTES | ENT_SUBSTITUTE); ?>" />
+	<link rel="stylesheet" href="<?php echo $basePrefix; ?>assets/index-CN_X97NH.css" />
+</head>
+<body>
+	<div id="app"></div>
+	<p style="display:none">ページに遷移します。</p>
+	<?php
+	// Determine pretty path for history replacement
+	if (!empty($id) && ($type === 'illust' || $type === 'investigator')):
+		$prettyPath = ($type === 'illust') ? 'illust/view/' . intval($id) : 'character/view/' . intval($id);
+		$prettyUrl = $basePrefix . $prettyPath;
+	?>
+	<script>
+		try {
+			// Replace browser URL to the pretty path without navigating
+			history.replaceState(null, '', <?php echo json_encode($prettyUrl); ?>);
+		} catch (e) {}
+	</script>
+	<script type="module" crossorigin src="<?php echo $basePrefix; ?>assets/index-CUTUM-BD.js"></script>
+</body>
+</html>
+<?php
+	endif;
+

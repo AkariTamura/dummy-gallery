@@ -38,13 +38,32 @@
           {{ t }}
         </router-link>
       </p>
+      <!-- SNS投稿ボタン群 -->
+      <div class="sns-share-buttons" style="margin-top: 16px; display: flex; gap: 12px;">
+        <BaseButton variant="secondary" @click="shareToTwitter">Twitterで投稿</BaseButton>
+        <BaseButton variant="secondary" @click="shareToBluesky">Blueskyで投稿</BaseButton>
+        <BaseButton variant="copy" @click="copyShareText">コピーして共有</BaseButton>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+// クリップボードコピー用
+async function copyShareText() {
+  if (!illust.value) return;
+  const text = `${illust.value.title}\n${window.location.href}`;
+  try {
+    await navigator.clipboard.writeText(text);
+    alert('共有テキストをコピーしました');
+  } catch (e) {
+    alert('コピーに失敗しました');
+  }
+}
 import { useRoute } from 'vue-router';
 import { useIllustDetail } from '@/composable/useIllustDetail';
+import { watch, onUnmounted } from 'vue';
+import { setMeta, restoreDefaults } from '@/util/meta';
 import BaseButton from '@/src/components/ui/BaseButton.vue';
 import BaseInput from '@/src/components/ui/BaseInput.vue';
 
@@ -52,6 +71,43 @@ const route = useRoute();
 const id = route.params.id;
 
 const { illust, correctAnswer, userAnswer, checkAnswer } = useIllustDetail(id);
+
+// watch illust and update OGP when loaded
+watch(illust, (v) => {
+  if (!v) return;
+  const title = v.title || document.title;
+  const description = v.caption || '';
+  // make image an absolute URL when possible
+  let image = '';
+  if (v.image) {
+    image = v.image.startsWith('http') ? v.image : `${window.location.origin}${v.image}`;
+  }
+  const url = window.location.href;
+  setMeta({ title, description, image, url, card: 'summary_large_image' });
+}, { immediate: true });
+
+onUnmounted(() => {
+  restoreDefaults();
+});
+
+// SNSシェア用関数群
+function shareToTwitter() {
+  if (!illust.value) return;
+  const text = encodeURIComponent(illust.value.title || '');
+  const url = encodeURIComponent(window.location.href);
+  const shareUrl = `https://twitter.com/intent/tweet?text=${text}&url=${url}`;
+  window.open(shareUrl, '_blank');
+}
+
+function shareToBluesky() {
+  if (!illust.value) return;
+  const text = encodeURIComponent(illust.value.title || '');
+  const url = encodeURIComponent(window.location.href);
+  // Bluesky公式のWeb+Actionスキーム
+  const shareUrl = `https://bsky.app/intent/post?text=${text}%20${url}`;
+  window.open(shareUrl, '_blank');
+}
+
 </script>
 
 <style scoped>

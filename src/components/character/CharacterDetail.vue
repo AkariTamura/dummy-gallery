@@ -40,22 +40,60 @@
           ><span class="value">{{ item.pc_from || '-' }}</span>
         </div>
       </div>
+      <!-- SNS投稿ボタン群 -->
+      <div class="sns-share-buttons" style="margin-top: 16px; display: flex; gap: 12px;">
+        <BaseButton variant="secondary" @click="shareToTwitter">Twitterで投稿</BaseButton>
+        <BaseButton variant="secondary" @click="shareToBluesky">Blueskyで投稿</BaseButton>
+        <BaseButton variant="copy" @click="copyShareText">コピーして共有</BaseButton>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue';
+// クリップボードコピー用
+const copyShareText = async () => {
+  if (!item.value) return;
+  const text = `${displayName.value}\n${window.location.href}`;
+  try {
+    await navigator.clipboard.writeText(text);
+    alert('共有テキストをコピーしました');
+  } catch (e) {
+    alert('コピーに失敗しました');
+  }
+};
+import BaseButton from '@/src/components/ui/BaseButton.vue';
+// SNSシェア用関数群
+function shareToTwitter() {
+  if (!item.value) return;
+  const text = encodeURIComponent(displayName.value || '');
+  const url = encodeURIComponent(window.location.href);
+  const shareUrl = `https://twitter.com/intent/tweet?text=${text}&url=${url}`;
+  window.open(shareUrl, '_blank');
+}
+
+function shareToBluesky() {
+  if (!item.value) return;
+  const text = encodeURIComponent(displayName.value || '');
+  const url = encodeURIComponent(window.location.href);
+  const shareUrl = `https://bsky.app/intent/post?text=${text}%20${url}`;
+  window.open(shareUrl, '_blank');
+}
 const DEV_LOG = import.meta.env.DEV;
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch, onUnmounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { investigatorDetail, INVESTIGATOR_BASE } from '@/util/api';
+import { setMeta, restoreDefaults } from '@/util/meta';
 
 const route = useRoute();
 const item = ref(null);
 const isImageMissing = ref(false);
 
+const assetsBase = import.meta.env.BASE_URL || '/';
 const getImageUrl = (id) =>
   `${INVESTIGATOR_BASE}?mode=investigator_image&id=${encodeURIComponent(id)}`;
+const getThumbUrl = (id) => `${assetsBase}assets/img/investigator/thumb/${id}.png`;
 
 const normalizeStatus = (status) => {
   if (!status) return {};
@@ -106,6 +144,30 @@ onMounted(async () => {
     item.value = null;
     isImageMissing.value = false;
   }
+});
+
+// OGP: use trimmed portrait (thumb) if available, else fallback to full image
+watch(item, (v) => {
+  if (!v) return;
+  const title = displayName.value || document.title;
+  const description = v.detail || v.job || '';
+  const thumb = getThumbUrl(v.id);
+
+  // check if thumb exists by loading it
+  const img = new Image();
+  img.onload = () => {
+    setMeta({ title, description, image: thumb, url: window.location.href, card: 'summary_large_image' });
+  };
+  img.onerror = () => {
+    // fallback to investigator image endpoint
+    const full = getImageUrl(v.id);
+    setMeta({ title, description, image: full, url: window.location.href, card: 'summary_large_image' });
+  };
+  img.src = thumb;
+}, { immediate: true });
+
+onUnmounted(() => {
+  restoreDefaults();
 });
 </script>
 

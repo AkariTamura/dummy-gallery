@@ -1,14 +1,27 @@
+# Disable MultiViews and enable rewrite
 Options -MultiViews
 RewriteEngine On
 RewriteBase /dummy/
 
 # API は素通し
-RewriteRule ^api/.*$ - [L]
+RewriteRule ^api/ - [L]
+RewriteRule ^public/ - [L]
+
+# OGP 用の内部リライト（先に）
+RewriteRule ^illust/view/([0-9]+)/?$ share.php?type=illust&id=$1 [L,QSA]
+RewriteRule ^character/view/([0-9]+)/?$ share.php?type=investigator&id=$1 [L,QSA]
 
 # 実在ファイル・ディレクトリはそのまま
 RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^ - [L]
 
-# それ以外は SPA / index.html
+# それ以外は SPA の index.html を返す
 RewriteRule ^ index.html [L]
+
+# optional: prevent indexing of the share endpoint
+<IfModule mod_headers.c>
+  <Files "share.php">
+    Header set X-Robots-Tag "noindex, nofollow"
+  </Files>
+</IfModule>
