@@ -798,3 +798,91 @@ if (isset($_GET['action']) && $_GET['action'] === 'update_investigator_created_a
         jsonResponse(['ok' => false, 'error' => $e->getMessage()]);
     }
 }
+
+// =========================
+// OGP画像アップロード API
+// =========================
+if ($path === 'api/admin.php/upload_ogp') {
+    // 管理者認証は冒頭のsession_start()で確認済み
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        jsonResponse(['error' => 'POST required'], 405);
+    }
+    
+    $id = $_POST['id'] ?? null;
+    if (!$id) {
+        jsonResponse(['error' => 'id required'], 400);
+    }
+    
+    // イラストが存在するか確認
+    $stmt = $illustdb->prepare("SELECT id FROM illust WHERE id = ?");
+    $stmt->execute([(int)$id]);
+    if (!$stmt->fetch()) {
+        jsonResponse(['error' => 'illust not found'], 404);
+    }
+    
+    // アップロードされた画像を取得
+    if (!isset($_FILES['ogp_image']) || $_FILES['ogp_image']['error'] !== UPLOAD_ERR_OK) {
+        jsonResponse(['error' => 'image upload failed'], 400);
+    }
+    
+    $tmpPath = $_FILES['ogp_image']['tmp_name'];
+    $targetDir = __DIR__ . '/../assets/img/illust/ogp/';
+    
+    // ディレクトリが存在しない場合は作成
+    if (!is_dir($targetDir)) {
+        mkdir($targetDir, 0755, true);
+    }
+    
+    $targetPath = $targetDir . $id . '.jpg';
+    
+    // ファイルを移動
+    if (!move_uploaded_file($tmpPath, $targetPath)) {
+        jsonResponse(['error' => 'failed to save image'], 500);
+    }
+    
+    jsonResponse(['success' => true, 'message' => 'OGP画像を保存しました']);
+}
+
+// =========================
+// 探索者用 OGP画像アップロード API
+// =========================
+if ($path === 'api/admin.php/upload_investigator_ogp') {
+    // 管理者認証は冒頭のsession_start()で確認済み
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        jsonResponse(['error' => 'POST required'], 405);
+    }
+
+    $id = $_POST['id'] ?? null;
+    if (!$id) {
+        jsonResponse(['error' => 'id required'], 400);
+    }
+
+    // 探索者が存在するか確認
+    $stmt = $investigatorsdb->prepare("SELECT id FROM investigators WHERE id = ?");
+    $stmt->execute([(int)$id]);
+    if (!$stmt->fetch()) {
+        jsonResponse(['error' => 'investigator not found'], 404);
+    }
+
+    // アップロードされた画像を取得
+    if (!isset($_FILES['ogp_image']) || $_FILES['ogp_image']['error'] !== UPLOAD_ERR_OK) {
+        jsonResponse(['error' => 'image upload failed'], 400);
+    }
+
+    $tmpPath = $_FILES['ogp_image']['tmp_name'];
+    $targetDir = __DIR__ . '/../assets/img/investigator/ogp/';
+
+    // ディレクトリが存在しない場合は作成
+    if (!is_dir($targetDir)) {
+        mkdir($targetDir, 0755, true);
+    }
+
+    $targetPath = $targetDir . $id . '.jpg';
+
+    // ファイルを移動（既存があれば上書き）
+    if (!move_uploaded_file($tmpPath, $targetPath)) {
+        jsonResponse(['error' => 'failed to save image'], 500);
+    }
+
+    jsonResponse(['success' => true, 'message' => 'investigator OGP画像を保存しました']);
+}

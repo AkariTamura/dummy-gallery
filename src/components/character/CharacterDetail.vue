@@ -1,8 +1,10 @@
 <template>
   <!-- Detail view -->
   <div class="detail-container">
+
     <router-link to="/character" class="back-link">一覧に戻る</router-link>
 
+    <h1 class="title">{{ item?.name }}</h1>
     <div v-if="item" class="detail">
       <div class="image-col">
         <img
@@ -40,12 +42,12 @@
           ><span class="value">{{ item.pc_from || '-' }}</span>
         </div>
       </div>
-      <!-- SNS投稿ボタン群 -->
-      <div class="sns-share-buttons" style="margin-top: 16px; display: flex; gap: 12px;">
-        <BaseButton variant="secondary" @click="shareToTwitter">Twitterで投稿</BaseButton>
-        <BaseButton variant="secondary" @click="shareToBluesky">Blueskyで投稿</BaseButton>
-        <BaseButton variant="copy" @click="copyShareText">コピーして共有</BaseButton>
-      </div>
+    </div>
+    <!-- SNS投稿ボタン群 -->
+    <div class="sns-share-buttons" style="margin-top: 16px; display: flex; gap: 12px;">
+      <BaseButton variant="secondary" @click="shareToTwitter">Twitterで投稿</BaseButton>
+      <BaseButton variant="secondary" @click="shareToBluesky">Blueskyで投稿</BaseButton>
+      <BaseButton variant="copy" @click="copyShareText">コピーして共有</BaseButton>
     </div>
   </div>
 </template>
@@ -55,7 +57,7 @@ import { ref } from 'vue';
 // クリップボードコピー用
 const copyShareText = async () => {
   if (!item.value) return;
-  const text = `${displayName.value}\n${window.location.href}`;
+  const text = `${item.value?.name || ''}\n${window.location.href}`;
   try {
     await navigator.clipboard.writeText(text);
     alert('共有テキストをコピーしました');
@@ -67,7 +69,7 @@ import BaseButton from '@/src/components/ui/BaseButton.vue';
 // SNSシェア用関数群
 function shareToTwitter() {
   if (!item.value) return;
-  const text = encodeURIComponent(displayName.value || '');
+  const text = encodeURIComponent(item.value?.name || '');
   const url = encodeURIComponent(window.location.href);
   const shareUrl = `https://twitter.com/intent/tweet?text=${text}&url=${url}`;
   window.open(shareUrl, '_blank');
@@ -75,7 +77,7 @@ function shareToTwitter() {
 
 function shareToBluesky() {
   if (!item.value) return;
-  const text = encodeURIComponent(displayName.value || '');
+  const text = encodeURIComponent(item.value?.name || '');
   const url = encodeURIComponent(window.location.href);
   const shareUrl = `https://bsky.app/intent/post?text=${text}%20${url}`;
   window.open(shareUrl, '_blank');
@@ -87,6 +89,8 @@ import { investigatorDetail, INVESTIGATOR_BASE } from '@/util/api';
 import { setMeta, restoreDefaults } from '@/util/meta';
 
 const route = useRoute();
+const routeId = route.params.id as string | string[] | undefined;
+const investigatorId = Array.isArray(routeId) ? routeId[0] : routeId || '';
 const item = ref(null);
 const isImageMissing = ref(false);
 
@@ -108,6 +112,7 @@ const normalizeStatus = (status) => {
 };
 
 const displayName = computed(() => {
+  if (!item.value) return '読み込み中...';
   const fullname = String(item.value?.fullname || '').trim();
   const kana = String(item.value?.kana || '').trim();
   const base = fullname || String(item.value?.name || '').trim();
@@ -136,7 +141,7 @@ const formatHeight = (height) => {
 
 onMounted(async () => {
   try {
-    const data = await investigatorDetail(route.params.id);
+  const data = await investigatorDetail(investigatorId);
     item.value = data?.error ? null : { ...data, status: normalizeStatus(data?.status) };
     isImageMissing.value = false;
   } catch (e) {
@@ -146,25 +151,30 @@ onMounted(async () => {
   }
 });
 
-// OGP: use trimmed portrait (thumb) if available, else fallback to full image
-watch(item, (v) => {
+// OGP 画像: investigator 用の ogp ディレクトリ JPG を優先して使用
+watch(
+  item,
+  (v) => {
   if (!v) return;
   const title = displayName.value || document.title;
   const description = v.detail || v.job || '';
-  const thumb = getThumbUrl(v.id);
 
-  // check if thumb exists by loading it
-  const img = new Image();
-  img.onload = () => {
-    setMeta({ title, description, image: thumb, url: window.location.href, card: 'summary_large_image' });
-  };
-  img.onerror = () => {
-    // fallback to investigator image endpoint
+  let image = '';
+  if (investigatorId) {
+    const base = (import.meta as any).env.BASE_URL || '/';
+    const normBase = String(base).endsWith('/') ? String(base).slice(0, -1) : String(base);
+    const ogpPath = `${normBase}/assets/img/investigator/ogp/${investigatorId}.jpg`;
+    image = `${window.location.origin}${ogpPath}`;
+  } else {
+    // フォールバックとして画像エンドポイントを使用
     const full = getImageUrl(v.id);
-    setMeta({ title, description, image: full, url: window.location.href, card: 'summary_large_image' });
-  };
-  img.src = thumb;
-}, { immediate: true });
+    image = full.startsWith('http') ? full : `${window.location.origin}${full}`;
+  }
+
+  setMeta({ title, description, image, url: window.location.href, card: 'summary_large_image' });
+  },
+  { immediate: true }
+);
 
 onUnmounted(() => {
   restoreDefaults();
@@ -172,6 +182,14 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+.sns-share-buttons {
+  justify-content: end;
+}
+.title {
+  margin: 8px 0 12px;
+  font-size: 24px;
+  font-weight: 600;
+}
 .detail-container {
   text-align: left;
 }

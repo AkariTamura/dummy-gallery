@@ -68,23 +68,36 @@ import BaseButton from '@/src/components/ui/BaseButton.vue';
 import BaseInput from '@/src/components/ui/BaseInput.vue';
 
 const route = useRoute();
-const id = route.params.id;
+const routeId = route.params.id as string | string[] | undefined;
+const illustId = Array.isArray(routeId) ? routeId[0] : routeId || '';
 
-const { illust, correctAnswer, userAnswer, checkAnswer } = useIllustDetail(id);
+const { illust, correctAnswer, userAnswer, checkAnswer } = useIllustDetail(illustId);
 
 // watch illust and update OGP when loaded
-watch(illust, (v) => {
-  if (!v) return;
-  const title = v.title || document.title;
-  const description = v.caption || '';
-  // make image an absolute URL when possible
-  let image = '';
-  if (v.image) {
-    image = v.image.startsWith('http') ? v.image : `${window.location.origin}${v.image}`;
-  }
-  const url = window.location.href;
-  setMeta({ title, description, image, url, card: 'summary_large_image' });
-}, { immediate: true });
+watch(
+  illust,
+  (v) => {
+    if (!v) return;
+    const title = v.title || document.title;
+    const description = v.caption || '';
+
+    // OGP 用の画像は ogp ディレクトリの JPG を優先して使用
+    let image = '';
+    if (illustId) {
+      const base = (import.meta as any).env.BASE_URL || '/';
+      const normBase = String(base).endsWith('/') ? String(base).slice(0, -1) : String(base);
+      const ogpPath = `${normBase}/assets/img/illust/ogp/${illustId}.jpg`;
+      image = `${window.location.origin}${ogpPath}`;
+    } else if (v.image) {
+      // フォールバックとして従来の画像パスを使用
+      image = v.image.startsWith('http') ? v.image : `${window.location.origin}${v.image}`;
+    }
+
+    const url = window.location.href;
+    setMeta({ title, description, image, url, card: 'summary_large_image' });
+  },
+  { immediate: true }
+);
 
 onUnmounted(() => {
   restoreDefaults();
@@ -172,6 +185,9 @@ function shareToBluesky() {
   padding: 6px;
   box-sizing: border-box;
   margin-bottom: 8px;
+}
+.sns-share-buttons {
+  justify-content: end;
 }
 
 @media (max-width: 768px) {

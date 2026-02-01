@@ -317,6 +317,12 @@
                 >手動で修正</BaseButton
               >
               <BaseButton
+                variant="primary"
+                title="OGP用の画像を設定します"
+                @click="openTrimModal(inv)"
+                >OGP画像設定</BaseButton
+              >
+              <BaseButton
                 variant="danger"
                 title="一度削除すると戻せません"
                 @click="doDeleteInvestigator(inv.id)"
@@ -333,15 +339,33 @@
         </tr>
       </tbody>
     </table>
+
+    <!-- 探索者 OGP トリミングモーダル -->
+    <div v-if="showTrimModal" class="modal-overlay" @click.self="closeTrimModal">
+      <div class="modal-content">
+        <h3>OGP画像設定（探索者）</h3>
+        <div class="trim-container">
+          <canvas ref="trimCanvas" class="trim-canvas"></canvas>
+        </div>
+        <div class="trim-controls">
+          <BaseButton variant="primary" @click="saveTrimmedImage" :disabled="isSavingOgp">
+            保存
+          </BaseButton>
+          <BaseButton variant="secondary" @click="closeTrimModal">キャンセル</BaseButton>
+        </div>
+        <p class="trim-hint">画像をドラッグ・ホイールで位置と拡大率を調整してください（2:1 比率）</p>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, nextTick } from 'vue';
 const DEV_LOG = import.meta.env.DEV;
 import { useRouter } from 'vue-router';
 import { useAdminInvestigators } from '@/composable/useAdminInvestigators';
 import { useAdminInvestigatorEntry } from '@/composable/useAdminInvestigatorEntry';
+import { INVESTIGATOR_BASE, uploadInvestigatorOgpImage } from '@/util/api';
 import investigatorInfo from '@/assets/json/investigatorInfo.json';
 import BaseButton from '@/src/components/ui/BaseButton.vue';
 import BaseInput from '@/src/components/ui/BaseInput.vue';
@@ -801,6 +825,211 @@ const doUpdateCreatedAt = async (inv) => {
     alert('登録日の更新に失敗しました');
   }
 };
+
+// -------------------------
+// 探索者 OGP トリミング用 state & 関数
+// -------------------------
+const showTrimModal = ref(false);
+const currentTrimInv = ref<any | null>(null);
+const trimCanvas = ref<HTMLCanvasElement | null>(null);
+const trimCtx = ref<CanvasRenderingContext2D | null>(null);
+const trimImage = ref<HTMLImageElement | null>(null);
+const imageScale = ref(1);
+const imageOffsetX = ref(0);
+const imageOffsetY = ref(0);
+const isDragging = ref(false);
+const dragStartX = ref(0);
+const dragStartY = ref(0);
+const isSavingOgp = ref(false);
+
+const TRIM_WIDTH = 800;
+const TRIM_HEIGHT = 400; // 2:1 ratio (width:height)
+const MIN_SCALE = 0.1;
+const MAX_SCALE = 5;
+
+const drawTrimCanvas = () => {
+  const ctx = trimCtx.value;
+  const img = trimImage.value;
+  if (!ctx || !img) return;
+
+  ctx.clearRect(0, 0, TRIM_WIDTH, TRIM_HEIGHT);
+  ctx.drawImage(
+    img,
+    imageOffsetX.value,
+    imageOffsetY.value,
+    img.width * imageScale.value,
+    img.height * imageScale.value
+  );
+
+  ctx.strokeStyle = '#00f';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(0, 0, TRIM_WIDTH, TRIM_HEIGHT);
+};
+
+const constrainImagePosition = () => {
+  const img = trimImage.value;
+  if (!img) return;
+
+  const imgWidth = img.width * imageScale.value;
+  const imgHeight = img.height * imageScale.value;
+
+  if (imgWidth < TRIM_WIDTH) {
+    imageOffsetX.value = (TRIM_WIDTH - imgWidth) / 2;
+  } else {
+    imageOffsetX.value = Math.min(0, Math.max(TRIM_WIDTH - imgWidth, imageOffsetX.value));
+  }
+
+  if (imgHeight < TRIM_HEIGHT) {
+    imageOffsetY.value = (TRIM_HEIGHT - imgHeight) / 2;
+  } else {
+    imageOffsetY.value = Math.min(0, Math.max(TRIM_HEIGHT - imgHeight, imageOffsetY.value));
+  }
+};
+
+const onTrimMouseDown = (e: MouseEvent) => {
+  if (!trimCanvas.value) return;
+  isDragging.value = true;
+  const rect = trimCanvas.value.getBoundingClientRect();
+  dragStartX.value = e.clientX - rect.left - imageOffsetX.value;
+  dragStartY.value = e.clientY - rect.top - imageOffsetY.value;
+};
+
+const onTrimMouseMove = (e: MouseEvent) => {
+  if (!isDragging.value || !trimCanvas.value) return;
+  const rect = trimCanvas.value.getBoundingClientRect();
+  imageOffsetX.value = e.clientX - rect.left - dragStartX.value;
+  imageOffsetY.value = e.clientY - rect.top - dragStartY.value;
+  constrainImagePosition();
+  drawTrimCanvas();
+};
+
+const onTrimMouseUp = () => {
+  isDragging.value = false;
+};
+
+const onTrimWheel = (e: WheelEvent) => {
+  e.preventDefault();
+  const delta = e.deltaY;
+  const scaleChange = delta > 0 ? 0.9 : 1.1;
+  const newScale = Math.min(MAX_SCALE, Math.max(MIN_SCALE, imageScale.value * scaleChange));
+
+  const img = trimImage.value;
+  const canvas = trimCanvas.value;
+  if (!img || !canvas) {
+    imageScale.value = newScale;
+    constrainImagePosition();
+    drawTrimCanvas();
+    return;
+  }
+
+  const rect = canvas.getBoundingClientRect();
+  const mouseX = e.clientX - rect.left;
+  const mouseY = e.clientY - rect.top;
+
+  const prevWidth = img.width * imageScale.value;
+  const prevHeight = img.height * imageScale.value;
+  const newWidth = img.width * newScale;
+  const newHeight = img.height * newScale;
+
+  const relX = (mouseX - imageOffsetX.value) / prevWidth;
+  const relY = (mouseY - imageOffsetY.value) / prevHeight;
+
+  imageScale.value = newScale;
+  imageOffsetX.value = mouseX - relX * newWidth;
+  imageOffsetY.value = mouseY - relY * newHeight;
+
+  constrainImagePosition();
+  drawTrimCanvas();
+};
+
+const openTrimModal = async (inv: any) => {
+  if (!inv?.id) return;
+  currentTrimInv.value = inv;
+  showTrimModal.value = true;
+
+  await nextTick();
+
+  const canvas = trimCanvas.value;
+  if (!canvas) return;
+
+  canvas.width = TRIM_WIDTH;
+  canvas.height = TRIM_HEIGHT;
+  trimCtx.value = canvas.getContext('2d');
+
+  try {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      trimImage.value = img;
+
+      const scaleX = TRIM_WIDTH / img.width;
+      const scaleY = TRIM_HEIGHT / img.height;
+      imageScale.value = Math.min(scaleX, scaleY);
+
+      constrainImagePosition();
+      drawTrimCanvas();
+    };
+    img.onerror = (e) => {
+      if (DEV_LOG) console.error('investigator OGP image load error:', e);
+      alert('画像の読み込みに失敗しました');
+      closeTrimModal();
+    };
+
+    img.src = `${INVESTIGATOR_BASE}?mode=investigator_image&id=${encodeURIComponent(inv.id)}`;
+
+    canvas.addEventListener('mousedown', onTrimMouseDown);
+    canvas.addEventListener('mousemove', onTrimMouseMove);
+    canvas.addEventListener('mouseup', onTrimMouseUp);
+    canvas.addEventListener('mouseleave', onTrimMouseUp);
+    canvas.addEventListener('wheel', onTrimWheel, { passive: false });
+  } catch (e) {
+    if (DEV_LOG) console.error('openTrimModal error:', e);
+    alert('画像の準備に失敗しました');
+    closeTrimModal();
+  }
+};
+
+const saveTrimmedImage = async () => {
+  if (!currentTrimInv.value || isSavingOgp.value) return;
+
+  isSavingOgp.value = true;
+  try {
+    const canvas = trimCanvas.value;
+    if (!canvas) throw new Error('canvas not ready');
+
+    const blob: Blob | null = await new Promise((resolve) =>
+      canvas.toBlob((b) => resolve(b), 'image/jpeg', 0.9)
+    );
+    if (!blob) throw new Error('blob not created');
+
+    const result = await uploadInvestigatorOgpImage(currentTrimInv.value.id, blob);
+    if ((result as any)?.ok === false) {
+      throw new Error((result as any)?.error || 'アップロード失敗');
+    }
+
+    closeTrimModal();
+  } catch (e: any) {
+    if (DEV_LOG) console.error('saveTrimmedImage error:', e);
+    alert('OGP画像の保存に失敗しました: ' + (e?.message || e));
+  } finally {
+    isSavingOgp.value = false;
+  }
+};
+
+const closeTrimModal = () => {
+  showTrimModal.value = false;
+  currentTrimInv.value = null;
+  trimImage.value = null;
+
+  const canvas = trimCanvas.value;
+  if (canvas) {
+    canvas.removeEventListener('mousedown', onTrimMouseDown as any);
+    canvas.removeEventListener('mousemove', onTrimMouseMove as any);
+    canvas.removeEventListener('mouseup', onTrimMouseUp as any);
+    canvas.removeEventListener('mouseleave', onTrimMouseUp as any);
+    canvas.removeEventListener('wheel', onTrimWheel as any);
+  }
+};
 </script>
 
 <style scoped>
@@ -811,6 +1040,52 @@ const doUpdateCreatedAt = async (inv) => {
   margin-bottom: 12px;
   font-size: 24px;
   font-weight: 600;
+}
+
+/* OGPトリミングモーダル */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 16px;
+  border-radius: 8px;
+  max-width: 900px;
+  width: 95%;
+}
+
+.trim-container {
+  width: 100%;
+  overflow: hidden;
+  margin: 12px 0;
+}
+
+.trim-canvas {
+  width: 100%;
+  max-width: 800px;
+  display: block;
+  margin: 0 auto;
+  border: 1px solid #ddd;
+}
+
+.trim-controls {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+.trim-hint {
+  margin-top: 8px;
+  font-size: 12px;
+  color: #666;
 }
 
 .controls {

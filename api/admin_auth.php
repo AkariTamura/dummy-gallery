@@ -44,7 +44,7 @@ if (!$PASSWORD_HASH) {
     }
 }
 if (!$PASSWORD_HASH) {
-    // 開発用フォールバック: 環境変数 APP_ENV が development または local の場合のみ許可
+    // 環境変数 APP_ENV が development または local の場合のみ許可
     $appEnv = getenv('APP_ENV') ?: getenv('APPLICATION_ENV');
     if ($appEnv === 'development' || $appEnv === 'local') {
         // 開発用ダミーハッシュ

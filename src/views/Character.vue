@@ -1,6 +1,5 @@
 <template>
   <div class="container">
-    <h1 class="title">探索者一覧</h1>
     <router-view></router-view>
   </div>
 </template>

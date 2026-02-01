@@ -68,8 +68,11 @@ if ($type === 'investigator' && $id) {
 		if ($row) {
 			$name = trim(($row['fullname'] ?? '') ?: ($row['name'] ?? '')) ?: $siteTitle;
 			$desc = trim($row['detail'] ?? $row['job'] ?? '') ?: $siteDesc;
+			$ogpRel = dirname(__DIR__) . '/assets/img/investigator/ogp/' . $row['id'] . '.jpg';
 			$thumbRel = dirname(__DIR__) . '/assets/img/investigator/thumb/' . $row['id'] . '.png';
-			if (file_exists($thumbRel)) {
+			if (file_exists($ogpRel)) {
+				$imageUrl = join_url($hostBase . $basePrefix, 'assets/img/investigator/ogp/' . $row['id'] . '.jpg');
+			} elseif (file_exists($thumbRel)) {
 				$imageUrl = join_url($hostBase . $basePrefix, 'assets/img/investigator/thumb/' . $row['id'] . '.png');
 			} else {
 				// fallback to image endpoint (absolute URL)
@@ -94,12 +97,19 @@ if ($type === 'investigator' && $id) {
 			$title = trim($row['title'] ?? '') ?: $siteTitle;
 			$desc = trim($row['caption'] ?? '') ?: $siteDesc;
 			$ext = $row['ext'] ?? 'jpg';
+			
+			// OGP用画像を優先、なければthumb、最後に元画像
+			$ogpPath = dirname(__DIR__) . '/assets/img/illust/ogp/' . $row['id'] . '.jpg';
 			$thumbPath = dirname(__DIR__) . '/assets/img/illust/thumb/' . $row['id'] . '.jpg';
-			if (file_exists($thumbPath)) {
+			
+			if (file_exists($ogpPath)) {
+				$imageUrl = join_url($hostBase . $basePrefix, 'assets/img/illust/ogp/' . $row['id'] . '.jpg');
+			} elseif (file_exists($thumbPath)) {
 				$imageUrl = join_url($hostBase . $basePrefix, 'assets/img/illust/thumb/' . $row['id'] . '.jpg');
 			} else {
 				$imageUrl = join_url($hostBase . $basePrefix, 'assets/img/illust/' . $row['id'] . '.' . $ext);
 			}
+			
 			$og['title'] = $title;
 			$og['description'] = $desc;
 			$og['image'] = $imageUrl;

@@ -1,5 +1,6 @@
 <template>
   <div class="list-container">
+    <h1 class="title">探索者一覧</h1>
     <div class="controls">
       <div class="control-item">
         <label class="control-label">並び替え</label>
@@ -157,6 +158,12 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+.title {
+  margin-bottom: 12px;
+  font-size: 24px;
+  font-weight: 600;
+  margin-right: auto;
+}
 .list-container {
   text-align: left;
   display: flex;

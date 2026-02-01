@@ -175,6 +175,34 @@ export async function illustDetail(id: string) {
   return safeFetchJson(`${ILLUST_BASE}?mode=detail&id=${encodeURIComponent(id)}`);
 }
 
+/**
+ * OGP画像アップロード
+ */
+export async function uploadOgpImage(id: number, imageBlob: Blob) {
+  const formData = new FormData();
+  formData.append('id', String(id));
+  formData.append('ogp_image', imageBlob, 'ogp.jpg');
+  
+  return safeFetchJson(`${ADMIN_BASE}?action=upload_ogp`, {
+    method: 'POST',
+    body: formData,
+  });
+}
+
+/**
+ * 探索者用 OGP画像アップロード
+ */
+export async function uploadInvestigatorOgpImage(id: number, imageBlob: Blob) {
+  const formData = new FormData();
+  formData.append('id', String(id));
+  formData.append('ogp_image', imageBlob, 'ogp.jpg');
+
+  return safeFetchJson(`${ADMIN_BASE}?action=upload_investigator_ogp`, {
+    method: 'POST',
+    body: formData,
+  });
+}
+
 /* =========================
  * Investigator API
  * ========================= */
